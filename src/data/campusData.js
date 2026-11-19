@@ -7767,31 +7767,39 @@ export const INITIAL_BOOKINGS = [
     roomId: 'EB1-101',
     roomName: 'EB1-101',
     timeSlot: '11:00',
+    startTime: '11:00',
+    duration: 1,
     day: 'Monday',
     title: 'ACM Coding Sprint & Algorithm Workshop',
     organizer: 'Dr. Amar Nath Patra',
     facultyName: 'Dr. Amar Nath Patra',
+    requestedBy: 'Dr. Amar Nath Patra',
     batch: 'Sec A',
     attendees: 45,
     timestamp: '10 mins ago',
     status: 'pending',
     type: 'Academic Event',
-    purpose: 'ACM Student Chapter competitive programming workshop'
+    purpose: 'ACM Student Chapter competitive programming workshop',
+    isPermanent: false
   },
   {
     id: 'req-mock-2',
     roomId: 'EB2-204',
     roomName: 'EB2-204',
     timeSlot: '13:00',
+    startTime: '13:00',
+    duration: 1,
     day: 'Monday',
     title: 'Robotics Team Sensor Calibration',
     organizer: 'Mr. Divanshu Jain',
     facultyName: 'Mr. Divanshu Jain',
+    requestedBy: 'Mr. Divanshu Jain',
     batch: 'Sec I',
     attendees: 30,
     timestamp: '25 mins ago',
     status: 'pending',
     type: 'Lab Session',
-    purpose: 'Robotics Club hardware calibration & debugging'
+    purpose: 'Robotics Club hardware calibration & debugging',
+    isPermanent: false
   }
 ];

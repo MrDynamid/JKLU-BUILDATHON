@@ -115,10 +115,56 @@ export function App() {
     }
   });
 
-  // Active timetable for the currently selected day
+  // Active timetable for the currently selected day, with approved bookings dynamically applied
   const currentDayTimetable = useMemo(() => {
-    return weeklyTimetableState[selectedDay] || weeklyTimetableState['Monday'] || INITIAL_WEEKLY_TIMETABLES.Monday;
-  }, [weeklyTimetableState, selectedDay]);
+    const base = weeklyTimetableState[selectedDay] || weeklyTimetableState['Monday'] || INITIAL_WEEKLY_TIMETABLES.Monday;
+    
+    // Find all approved bookings that apply to this day (or permanent)
+    const approvedDayBookings = bookings.filter(
+      (b) => b.status === 'approved' && (b.day === selectedDay || b.isPermanent)
+    );
+
+    if (approvedDayBookings.length === 0) return base;
+
+    const overlaid = JSON.parse(JSON.stringify(base));
+
+    approvedDayBookings.forEach((b) => {
+      const room = b.roomId || b.roomName;
+      if (!room) return;
+      const startHourStr = b.startTime || 
+        (b.timeSlot?.includes(':') ? b.timeSlot.match(/\d{2}:\d{2}/)?.[0] : b.timeSlot) || 
+        '11:00';
+      const startIdx = TIME_SLOTS.findIndex(s => s.id === startHourStr);
+      const duration = b.duration || 1;
+
+      if (!overlaid[room]) overlaid[room] = {};
+
+      if (startIdx !== -1) {
+        for (let i = 0; i < duration; i++) {
+          const slot = TIME_SLOTS[startIdx + i];
+          if (slot) {
+            overlaid[room][slot.id] = {
+              status: 'booked',
+              title: b.purpose || b.title || 'Reserved / Booked',
+              batch: b.batch,
+              bookedBy: b.organizer || b.facultyName || b.requestedBy || 'Faculty',
+              isPermanentMasterChange: b.isPermanent
+            };
+          }
+        }
+      } else if (startHourStr && overlaid[room][startHourStr]) {
+        overlaid[room][startHourStr] = {
+          status: 'booked',
+          title: b.purpose || b.title || 'Reserved / Booked',
+          batch: b.batch,
+          bookedBy: b.organizer || b.facultyName || b.requestedBy || 'Faculty',
+          isPermanentMasterChange: b.isPermanent
+        };
+      }
+    });
+
+    return overlaid;
+  }, [weeklyTimetableState, selectedDay, bookings]);
 
   // UI Interactive State
   const [selectedBookingVenue, setSelectedBookingVenue] = useState(null);
@@ -128,6 +174,7 @@ export function App() {
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [exchangeModalInitialSlot, setExchangeModalInitialSlot] = useState(null);
   const [toasts, setToasts] = useState([]);
+  const lastToastRef = useRef({ key: '', time: 0 });
   const [traces, setTraces] = useState([
     {
       id: 'init-1',
@@ -158,8 +205,15 @@ export function App() {
     } catch (e) { }
   }, [bookings]);
 
-  // Toast Helper
+  // Toast Helper with debounced duplicate suppression
   const addToast = (title, message, type = 'success') => {
+    const key = `${title}:${message}`;
+    const now = Date.now();
+    if (lastToastRef.current.key === key && now - lastToastRef.current.time < 1200) {
+      return; // Suppress duplicate toast fired within 1.2s
+    }
+    lastToastRef.current = { key, time: now };
+
     const id = Date.now().toString() + Math.random().toString().slice(2, 6);
     setToasts((prev) => [...prev, { id, title, message, type }]);
     setTimeout(() => {
@@ -705,35 +759,33 @@ export function App() {
 
   // Toggle Faculty On Leave Handler for Active Day
   const handleToggleFacultyLeave = (facultyId) => {
+    const target = facultyList.find((f) => f.id === facultyId);
+    if (!target) return;
+
+    const nextState = !target.onLeave;
+    const daySlots = Array.isArray(target.assignedSlots)
+      ? target.assignedSlots
+      : (target.assignedSlots?.[selectedDay] || []);
+    const affectedRooms = daySlots.map((s) => `${s.roomId} (${s.time})`).join(', ');
+
+    if (nextState) {
+      addToast(
+        `Faculty on Leave — ${selectedDay} Slots Freed`,
+        daySlots.length > 0
+          ? `Freed classroom slot(s) [${affectedRooms}] · ${target.name} marked on leave for ${selectedDay}.`
+          : `${target.name} marked on leave (no classes scheduled for ${selectedDay}).`,
+        'amber'
+      );
+    } else {
+      addToast(
+        'Schedule Restored',
+        `${target.name} restored to present on campus.`,
+        'info'
+      );
+    }
+
     setFacultyList((prev) =>
-      prev.map((f) => {
-        if (f.id === facultyId) {
-          const nextState = !f.onLeave;
-          const daySlots = Array.isArray(f.assignedSlots)
-            ? f.assignedSlots
-            : (f.assignedSlots?.[selectedDay] || []);
-          const affectedRooms = daySlots.map((s) => `${s.roomId} (${s.time})`).join(', ');
-
-          if (nextState) {
-            addToast(
-              `Faculty on Leave — ${selectedDay} Slots Freed`,
-              daySlots.length > 0
-                ? `Freed classroom slot(s) [${affectedRooms}] · ${f.name} marked on leave for ${selectedDay}.`
-                : `${f.name} marked on leave (no classes scheduled for ${selectedDay}).`,
-              'amber'
-            );
-          } else {
-            addToast(
-              'Schedule Restored',
-              `${f.name} restored to present on campus.`,
-              'info'
-            );
-          }
-
-          return { ...f, onLeave: nextState };
-        }
-        return f;
-      })
+      prev.map((f) => (f.id === facultyId ? { ...f, onLeave: nextState } : f))
     );
   };
 
@@ -785,7 +837,10 @@ export function App() {
     if (!targetBooking) return;
 
     const bookingDay = targetBooking.day || selectedDay;
-    const startIdx = TIME_SLOTS.findIndex(s => s.id === targetBooking.startTime);
+    const startHourStr = targetBooking.startTime || 
+      (targetBooking.timeSlot?.includes(':') ? targetBooking.timeSlot.match(/\d{2}:\d{2}/)?.[0] : targetBooking.timeSlot) ||
+      '11:00';
+    const startIdx = TIME_SLOTS.findIndex(s => s.id === startHourStr);
     const duration = targetBooking.duration || 1;
     const isPermanent = targetBooking.isPermanent || false;
 
@@ -802,9 +857,9 @@ export function App() {
           if (slot) {
             updated[d][targetBooking.roomId][slot.id] = {
               status: 'booked',
-              title: targetBooking.purpose,
+              title: targetBooking.purpose || targetBooking.title,
               batch: targetBooking.batch,
-              bookedBy: targetBooking.requestedBy,
+              bookedBy: targetBooking.requestedBy || targetBooking.organizer || targetBooking.facultyName || 'Faculty',
               isPermanentMasterChange: isPermanent
             };
           }
@@ -841,7 +896,7 @@ export function App() {
 
     addToast(
       isPermanent ? 'Permanent Master Timetable Overwritten' : 'Booking Approved & Locked',
-      `Room ${targetBooking.roomName} successfully locked for ${isPermanent ? 'recurring weekly timetable' : `${bookingDay} (${targetBooking.timeSlot})`} on master timetable.`,
+      `Room ${targetBooking.roomName || targetBooking.roomId} successfully locked for ${isPermanent ? 'recurring weekly timetable' : `${bookingDay} (${targetBooking.timeSlot || targetBooking.startTime})`} on master timetable.`,
       'success'
     );
 
@@ -851,7 +906,7 @@ export function App() {
         step: prev.length + 1,
         tag: isPermanent ? '[MASTER COMMIT]' : '[LOCK]',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        message: `${isPermanent ? 'Permanent Master Schedule Commit: ' : 'Single-day lock: '}Room ${targetBooking.roomName} booked for ${targetBooking.batch} (${targetBooking.purpose}) at ${targetBooking.timeSlot}.`
+        message: `${isPermanent ? 'Permanent Master Schedule Commit: ' : 'Single-day lock: '}Room ${targetBooking.roomName || targetBooking.roomId} booked for ${targetBooking.batch} (${targetBooking.purpose || targetBooking.title}) at ${targetBooking.timeSlot || targetBooking.startTime}.`
       },
       ...prev
     ]);
@@ -961,6 +1016,7 @@ export function App() {
     return VENUES.filter((v) => {
       const slot = currentDayTimetable[v.id]?.[selectedTime];
       if (!slot || slot.status === 'free') return true;
+      if (slot.status === 'booked') return false;
       if (slot.facultyId) {
         const fac = facultyList.find((f) => f.id === slot.facultyId);
         if (fac && fac.onLeave) return true;

@@ -8,7 +8,7 @@ export function ToastContainer({ toasts, onDismiss }) {
     <div 
       role="region" 
       aria-label="Notifications"
-      className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none"
+      className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-md w-full pointer-events-none"
     >
       {/* Hidden live region for screen readers */}
       <div className="sr-only" aria-live="assertive">
@@ -22,12 +22,12 @@ export function ToastContainer({ toasts, onDismiss }) {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto p-4 rounded-xl shadow-lg border flex items-start gap-3 transition-all duration-200 bg-white ${
+            className={`toast-slide-up pointer-events-auto p-4 rounded-2xl shadow-xl border flex items-start gap-3 transition-all duration-200 bg-white ${
               isAmber 
-                ? 'border-amber-300 ring-1 ring-amber-200' 
+                ? 'border-amber-300 ring-2 ring-amber-100' 
                 : isSuccess 
-                  ? 'border-emerald-300 ring-1 ring-emerald-200' 
-                  : 'border-slate-300'
+                  ? 'border-emerald-300 ring-2 ring-emerald-100' 
+                  : 'border-zinc-200 shadow-lg'
             }`}
           >
             <div className="shrink-0 mt-0.5">
@@ -40,7 +40,7 @@ export function ToastContainer({ toasts, onDismiss }) {
                   <CheckCircle2 className="w-3.5 h-3.5" />
                 </div>
               ) : (
-                <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-700">
+                <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700">
                   <Info className="w-3.5 h-3.5" />
                 </div>
               )}
@@ -48,11 +48,11 @@ export function ToastContainer({ toasts, onDismiss }) {
 
             <div className="flex-1 min-w-0">
               {toast.title && (
-                <div className="text-xs font-bold text-slate-900 mb-0.5 font-mono">
+                <div className="text-xs font-bold text-zinc-900 mb-0.5 font-sans tracking-tight">
                   {toast.title}
                 </div>
               )}
-              <div className="text-xs text-slate-700 leading-snug">
+              <div className="text-xs text-zinc-600 leading-snug font-sans">
                 {toast.message}
               </div>
             </div>
@@ -60,7 +60,7 @@ export function ToastContainer({ toasts, onDismiss }) {
             <button
               type="button"
               onClick={() => onDismiss(toast.id)}
-              className="shrink-0 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              className="shrink-0 p-1 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 transition-colors cursor-pointer"
               aria-label="Dismiss notification"
             >
               <X className="w-4 h-4" />
@@ -71,3 +71,5 @@ export function ToastContainer({ toasts, onDismiss }) {
     </div>
   );
 }
+
+export default ToastContainer;

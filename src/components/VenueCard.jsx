@@ -1,6 +1,6 @@
 import React from 'react';
 import { TimelineBar } from './TimelineBar';
-import { Users, Tv, Zap, Monitor, MapPin, Calendar, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Users, Tv, Zap, Monitor, MapPin, Calendar, Clock, CheckCircle, AlertCircle, Lock } from 'lucide-react';
 
 export function VenueCard({
   venue,
@@ -17,8 +17,12 @@ export function VenueCard({
   const isZeroDelay = walkingDelay?.isZeroDelay;
   const isOccupiedAtSelected = continuousFree?.isOccupiedAtSelected;
 
+  const currentSlot = schedule?.[selectedTime];
+  const isBookedAtSelected = currentSlot?.status === 'booked';
+
   const exchangedSlots = Object.entries(schedule || {}).filter(([_, s]) => s && s.isExchanged);
   const rescheduledSlots = Object.entries(schedule || {}).filter(([_, s]) => s && s.isRescheduled);
+  const bookedSlots = Object.entries(schedule || {}).filter(([_, s]) => s && s.status === 'booked');
 
   const handleSlotClick = (slotId, slotInfo) => {
     // If user clicks any slot on the timeline bar, open booking modal for that slot
@@ -59,18 +63,29 @@ export function VenueCard({
           </span>
         </div>
 
-        {/* Highlight Metric Badge: Max Continuous Free Window */}
+        {/* Highlight Metric Badge: Continuous Free Window or Reserved Status */}
         <div className={`my-2.5 flex items-center justify-between text-xs py-2 px-3 rounded-xl border ${
-          !isOccupiedAtSelected
+          isBookedAtSelected
+            ? 'bg-zinc-900 border-zinc-800 text-white shadow-2xs'
+            : !isOccupiedAtSelected
             ? 'bg-emerald-50/70 border-emerald-200/80 text-emerald-900'
             : 'bg-zinc-50 border-zinc-200 text-zinc-700'
         }`}>
           <div className="flex items-center gap-2">
             <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-              !isOccupiedAtSelected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-400'
+              isBookedAtSelected
+                ? 'bg-amber-400'
+                : !isOccupiedAtSelected
+                ? 'bg-emerald-500 animate-pulse'
+                : 'bg-rose-400'
             }`} />
             <div>
-              {!isOccupiedAtSelected ? (
+              {isBookedAtSelected ? (
+                <div className="font-sans">
+                  <span className="text-amber-300 font-bold">Reserved at {selectedTime}: </span>
+                  <strong className="text-white font-medium">{currentSlot?.title || 'Admin Confirmed'}</strong>
+                </div>
+              ) : !isOccupiedAtSelected ? (
                 <div className="font-sans">
                   <span className="text-emerald-800 font-medium">Available: </span>
                   <strong className="text-emerald-950 font-bold">{continuousFree.range}</strong>
@@ -84,11 +99,15 @@ export function VenueCard({
             </div>
           </div>
 
-          {!isOccupiedAtSelected && continuousFree.hours > 0 && (
+          {isBookedAtSelected ? (
+            <span className="text-[10px] font-bold text-amber-950 bg-amber-400 px-2 py-0.5 rounded-md shrink-0 shadow-2xs font-sans">
+              Locked
+            </span>
+          ) : !isOccupiedAtSelected && continuousFree.hours > 0 ? (
             <span className="text-[11px] font-bold text-emerald-800 bg-white/80 px-2 py-0.5 rounded-md border border-emerald-200/80 shrink-0 shadow-2xs font-sans">
               {continuousFree.hours}h Free
             </span>
-          )}
+          ) : null}
         </div>
 
         {/* Dynamic Context Badges */}
@@ -117,6 +136,15 @@ export function VenueCard({
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
               <span className="truncate">
                 Faculty on Leave: {unlockedStatus.unlockedSlots.map(s => `${s.teacher} (${s.timeSlot})`).join(', ')}
+              </span>
+            </div>
+          )}
+
+          {bookedSlots.length > 0 && (
+            <div className="text-[11px] font-medium text-zinc-900 bg-zinc-100 px-2.5 py-1 rounded-lg flex items-center gap-2 border border-zinc-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-900 shrink-0" />
+              <span className="truncate">
+                Admin Locked: {bookedSlots.map(([time, s]) => `${time} (${s.title || 'Reserved'})`).join(', ')}
               </span>
             </div>
           )}
@@ -161,19 +189,20 @@ export function VenueCard({
             ) : (
               <>
                 <Zap className="w-3.5 h-3.5 text-zinc-400" />
-                <span>{venue.powerSockets}</span>
+                <span>{venue.powerSockets} Power</span>
               </>
             )}
           </span>
         </div>
 
-        {/* Visual Daily Timeline Bar (9 AM to 5 PM) */}
-        <div className="pt-2.5 mt-1 font-sans">
-          <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1">
-            <span>Daily Schedule (Click slot to book)</span>
+        {/* Timeline Visualization Bar */}
+        <div className="mt-3">
+          <div className="flex items-center justify-between text-[11px] text-zinc-400 mb-1 font-sans">
+            <span>Daily Timeline (9 AM – 5 PM)</span>
+            <span className="text-[10px] text-zinc-400">Click slot to book</span>
           </div>
-          <TimelineBar 
-            roomSchedule={schedule} 
+          <TimelineBar
+            roomSchedule={schedule}
             facultyList={facultyList}
             selectedTime={selectedTime}
             onSelectSlot={handleSlotClick}
@@ -181,30 +210,34 @@ export function VenueCard({
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="mt-3.5 pt-3 border-t border-zinc-100 flex items-center justify-between font-sans">
-        <span className="text-xs text-zinc-400 font-medium">
-          {venue.building} · {venue.floorLabel}
-        </span>
-        
+      {/* Card Action Button */}
+      <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between">
+        <div className="text-[11px] text-zinc-500 font-sans">
+          {isBookedAtSelected ? (
+            <span className="font-semibold text-zinc-800">Admin Locked Slot</span>
+          ) : !isOccupiedAtSelected ? (
+            <span className="text-emerald-700 font-semibold">Immediate Booking Available</span>
+          ) : (
+            <span>Occupied by scheduled lecture</span>
+          )}
+        </div>
+
         <button
           type="button"
-          onClick={() => {
-            const initialSlot = isOccupiedAtSelected 
-              ? (continuousFree.firstAvailableSlot || '09:00') 
-              : selectedTime;
-            onBookVenue(venue, initialSlot);
-          }}
-          className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-            isOccupiedAtSelected
-              ? 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 border border-zinc-300'
-              : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-2xs'
+          onClick={() => onBookVenue(venue, selectedTime)}
+          className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-2xs font-sans ${
+            isBookedAtSelected
+              ? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-300'
+              : !isOccupiedAtSelected
+              ? 'bg-zinc-900 text-white hover:bg-zinc-800'
+              : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 border border-zinc-200'
           }`}
         >
-          <Calendar className="w-3.5 h-3.5" />
-          <span>{isOccupiedAtSelected ? 'Select Available Slot' : 'Request Booking'}</span>
+          {isBookedAtSelected ? 'View / Request Other Slot' : 'Request Booking'}
         </button>
       </div>
     </div>
   );
 }
+
+export default VenueCard;
