@@ -62,7 +62,7 @@ export function CustomSelect({
   };
 
   return (
-    <div ref={containerRef} className={`relative inline-block text-left font-sans ${className}`}>
+    <div ref={containerRef} className={`relative inline-block text-left font-sans ${className} ${isOpen ? 'z-50' : ''}`}>
       {/* Trigger Button */}
       <button
         type="button"

@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { 
-  X, 
-  ExternalLink, 
-  Calendar, 
-  Clock, 
-  Building, 
-  Users, 
-  Printer, 
-  User, 
+import {
+  X,
+  ExternalLink,
+  Calendar,
+  Clock,
+  Building,
+  Users,
+  Printer,
+  User,
   Layers,
   ChevronRight,
   CheckCircle2,
@@ -78,8 +78,8 @@ export function TimetableModal({
       const assigned = selectedFaculty.assignedSlots || {};
 
       DAYS_OF_WEEK.forEach(day => {
-        const daySlots = Array.isArray(assigned) 
-          ? assigned 
+        const daySlots = Array.isArray(assigned)
+          ? assigned
           : (assigned[day] || []);
 
         daySlots.forEach(s => {
@@ -139,8 +139,8 @@ export function TimetableModal({
 
   // Open timetable in a separate native browser window
   const handleOpenInSeparateWindow = () => {
-    const title = viewMode === 'faculty' 
-      ? `JKLU Timetable - ${selectedFaculty?.name || 'Faculty'}` 
+    const title = viewMode === 'faculty'
+      ? `JKLU Timetable - ${selectedFaculty?.name || 'Faculty'}`
       : `JKLU Timetable - Section ${selectedBatch}`;
 
     const newWindow = window.open('', '_blank', 'width=1100,height=750,menubar=no,toolbar=no,location=no,status=no');
@@ -194,8 +194,8 @@ export function TimetableModal({
               </thead>
               <tbody class="divide-y divide-slate-100 font-sans">
                 ${TIME_SLOTS.map(slot => {
-                  if (slot.id === '12:00') {
-                    return `
+      if (slot.id === '12:00') {
+        return `
                       <tr class="bg-amber-50/70 border-y border-amber-200">
                         <td class="py-2.5 px-2 text-center font-bold text-amber-900 bg-amber-100/70 border-r border-amber-200 mono text-[11px]">
                           12 PM
@@ -208,20 +208,20 @@ export function TimetableModal({
                         </td>
                       </tr>
                     `;
-                  }
-                  return `
+      }
+      return `
                   <tr class="hover:bg-slate-50/50">
                     <td class="py-3 px-2 text-center font-bold text-slate-600 bg-slate-50/50 border-r border-slate-200 mono text-[11px]">
                       ${slot.label}
                       <div class="text-[9px] text-slate-400 font-normal">${slot.range.split(' ')[0]}</div>
                     </td>
                     ${DAYS_OF_WEEK.map(day => {
-                      const itemVal = timetableMatrix[day]?.[slot.id];
-                      if (!itemVal) {
-                        return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">—</td>`;
-                      }
-                      const items = Array.isArray(itemVal) ? itemVal : [itemVal];
-                      return `
+        const itemVal = timetableMatrix[day]?.[slot.id];
+        if (!itemVal) {
+          return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">—</td>`;
+        }
+        const items = Array.isArray(itemVal) ? itemVal : [itemVal];
+        return `
                         <td class="py-2 px-2.5 border-r border-slate-100 last:border-r-0">
                           ${items.map(item => `
                             <div class="p-1.5 rounded-lg bg-blue-50/70 border border-blue-200/60 mb-1 last:mb-0">
@@ -234,10 +234,10 @@ export function TimetableModal({
                           `).join('')}
                         </td>
                       `;
-                    }).join('')}
+      }).join('')}
                   </tr>
                 `;
-                }).join('')}
+    }).join('')}
               </tbody>
             </table>
           </div>
@@ -289,18 +289,16 @@ export function TimetableModal({
             <button
               type="button"
               onClick={() => setViewMode('faculty')}
-              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'faculty' ? 'bg-white text-zinc-900 shadow-2xs font-bold' : 'text-zinc-600 hover:text-zinc-900'
-              }`}
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${viewMode === 'faculty' ? 'bg-white text-zinc-900 shadow-2xs font-bold' : 'text-zinc-600 hover:text-zinc-900'
+                }`}
             >
               Faculty
             </button>
             <button
               type="button"
               onClick={() => setViewMode('batch')}
-              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'batch' ? 'bg-white text-zinc-900 shadow-2xs font-bold' : 'text-zinc-600 hover:text-zinc-900'
-              }`}
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${viewMode === 'batch' ? 'bg-white text-zinc-900 shadow-2xs font-bold' : 'text-zinc-600 hover:text-zinc-900'
+                }`}
             >
               Section
             </button>

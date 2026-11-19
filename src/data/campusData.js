@@ -2293,6 +2293,24 @@ export const INITIAL_FACULTY = [
       ],
       "Friday": []
     }
+  },
+  {
+    "id": "fac-coding-mentor",
+    "name": "Coding Mentor / Faculty",
+    "department": "Computer Science & Engineering",
+    "course": "Compulsory Coding Hours (CP1001)",
+    "avatar": "CM",
+    "onLeave": false,
+    "assignedSlots": {
+      "Monday": [],
+      "Tuesday": [],
+      "Wednesday": [],
+      "Thursday": [],
+      "Friday": [
+        { "roomId": "Campus Wide", "time": "15:00", "course": "Compulsory Coding Hours (CP1001)", "batch": "All Sections" },
+        { "roomId": "Campus Wide", "time": "16:00", "course": "Compulsory Coding Hours (CP1001)", "batch": "All Sections" }
+      ]
+    }
   }
 ];
 
@@ -7653,3 +7671,78 @@ export const INITIAL_BOOKINGS = [
     isPermanent: false
   }
 ];
+
+export const DEFAULT_INTAKE_COURSES = [
+  // --- Synchronized Compulsory Subject across all Sections A–J ---
+  {
+    id: 'c-coding-compulsory',
+    code: 'CP1001',
+    title: 'Compulsory Coding Hours',
+    type: 'lab',
+    teacher: 'Coding Mentor / Faculty',
+    sections: ['Sec A', 'Sec B', 'Sec C', 'Sec D', 'Sec E', 'Sec F', 'Sec G', 'Sec H', 'Sec I', 'Sec J'],
+    hoursPerWeek: 2,
+    group: 'Common',
+    isCompulsoryFixed: true,
+    fixedDay: 'Friday',
+    fixedTimeSlots: ['15:00', '16:00']
+  },
+
+  // --- Common Core Subjects ---
+  // Programming-1 Theory (3 hrs)
+  { id: 'c-cs1139-1', code: 'CS1139', title: 'Programming-1', type: 'theory', teacher: 'Dr. Amar Nath Patra', sections: ['Sec A', 'Sec I'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-cs1139-2', code: 'CS1139', title: 'Programming-1', type: 'theory', teacher: 'Dr. Ankush Soni', sections: ['Sec B', 'Sec D'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-cs1139-3', code: 'CS1139', title: 'Programming-1', type: 'theory', teacher: 'Dr. Amit Sinhal', sections: ['Sec C', 'Sec F'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-cs1139-4', code: 'CS1139', title: 'Programming-1', type: 'theory', teacher: 'Mr. Mayank Kundalwal', sections: ['Sec E', 'Sec G'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-cs1139-5', code: 'CS1139', title: 'Programming-1', type: 'theory', teacher: 'Dr. Surbhi Chhabra', sections: ['Sec H', 'Sec J'], hoursPerWeek: 3, group: 'Common' },
+
+  // Programming-1 Lab (2 hrs) - TB-106
+  { id: 'c-cs1139-l1', code: 'CS1139-L', title: 'Programming-1 Lab', type: 'lab', teacher: 'Dr. Amar Nath Patra', sections: ['Sec A', 'Sec I'], hoursPerWeek: 2, venue: 'TB-106', group: 'Common' },
+  { id: 'c-cs1139-l2', code: 'CS1139-L', title: 'Programming-1 Lab', type: 'lab', teacher: 'Dr. Ankush Soni', sections: ['Sec B', 'Sec D'], hoursPerWeek: 2, venue: 'TB-106', group: 'Common' },
+  { id: 'c-cs1139-l3', code: 'CS1139-L', title: 'Programming-1 Lab', type: 'lab', teacher: 'Dr. Amit Sinhal', sections: ['Sec C', 'Sec F'], hoursPerWeek: 2, venue: 'TB-106', group: 'Common' },
+  { id: 'c-cs1139-l4', code: 'CS1139-L', title: 'Programming-1 Lab', type: 'lab', teacher: 'Mr. Mayank Kundalwal', sections: ['Sec G'], hoursPerWeek: 2, venue: 'TB-106', group: 'Common' },
+  { id: 'c-cs1139-l5', code: 'CS1139-L', title: 'Programming-1 Lab', type: 'lab', teacher: 'Dr. Surbhi Chhabra', sections: ['Sec E', 'Sec H', 'Sec J'], hoursPerWeek: 2, venue: 'TB-106', group: 'Common' },
+
+  // Basic Electrical Engineering Theory (3 hrs)
+  { id: 'c-ee1118-1', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Dr. Rashmi Kushwaha', sections: ['Sec A', 'Sec C'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-ee1118-2', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Dr. Rajnish Kumar', sections: ['Sec B'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-ee1118-3', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Dr. Megha Sahu', sections: ['Sec D', 'Sec F'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-ee1118-4', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Dr. H. P. Agrawal', sections: ['Sec E'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-ee1118-5', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Dr. Devika Kataria', sections: ['Sec G', 'Sec J'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-ee1118-6', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Dr. Gaurav Mani Khanal', sections: ['Sec H'], hoursPerWeek: 3, group: 'Common' },
+  { id: 'c-ee1118-7', code: 'EE1118', title: 'Fundamentals of E. & E. Engineering', type: 'theory', teacher: 'Mr. Divanshu Jain', sections: ['Sec I'], hoursPerWeek: 3, group: 'Common' },
+
+  // EE Engineering Lab (2 hrs) - TB-112 / TB-102
+  { id: 'c-ee1118-l1', code: 'EE1118-L', title: 'EE Engineering Lab', type: 'lab', teacher: 'Dr. Rashmi Kushwaha', sections: ['Sec A', 'Sec C'], hoursPerWeek: 2, venue: 'TB-112', group: 'Common' },
+  { id: 'c-ee1118-l2', code: 'EE1118-L', title: 'EE Engineering Lab', type: 'lab', teacher: 'Dr. Rajnish Kumar', sections: ['Sec B', 'Sec H'], hoursPerWeek: 2, venue: 'TB-112', group: 'Common' },
+  { id: 'c-ee1118-l3', code: 'EE1118-L', title: 'EE Engineering Lab', type: 'lab', teacher: 'Dr. Megha Sahu', sections: ['Sec D', 'Sec F'], hoursPerWeek: 2, venue: 'TB-112', group: 'Common' },
+  { id: 'c-ee1118-l4', code: 'EE1118-L', title: 'EE Engineering Lab', type: 'lab', teacher: 'Dr. H. P. Agrawal', sections: ['Sec E', 'Sec G'], hoursPerWeek: 2, venue: 'TB-112', group: 'Common' },
+  { id: 'c-ee1118-l5', code: 'EE1118-L', title: 'EE Engineering Lab', type: 'lab', teacher: 'Mr. Divanshu Jain', sections: ['Sec I'], hoursPerWeek: 2, venue: 'TB-112', group: 'Common' },
+  { id: 'c-ee1118-l6', code: 'EE1118-L', title: 'EE Engineering Lab', type: 'lab', teacher: 'Dr. Devika Kataria', sections: ['Sec J'], hoursPerWeek: 2, venue: 'TB-112', group: 'Common' },
+
+  // Calculus and Differential Equations (4 hrs)
+  { id: 'c-as1109-1', code: 'AS1109', title: 'Calculus and Differential Equations', type: 'theory', teacher: 'Dr. Anant Pratap Singh', sections: ['Sec A'], hoursPerWeek: 4, group: 'Common' },
+  { id: 'c-as1109-2', code: 'AS1109', title: 'Calculus and Differential Equations', type: 'theory', teacher: 'Dr. Manushi Gupta', sections: ['Sec B'], hoursPerWeek: 4, group: 'Common' },
+  { id: 'c-as1109-3', code: 'AS1109', title: 'Calculus and Differential Equations', type: 'theory', teacher: 'Dr. Anshu Yadav', sections: ['Sec C', 'Sec G'], hoursPerWeek: 4, group: 'Common' },
+  { id: 'c-as1109-4', code: 'AS1109', title: 'Calculus and Differential Equations', type: 'theory', teacher: 'Dr. Sushant Pokhriyal', sections: ['Sec D', 'Sec E'], hoursPerWeek: 4, group: 'Common' },
+  { id: 'c-as1109-5', code: 'AS1109', title: 'Calculus and Differential Equations', type: 'theory', teacher: 'Ms. Shobha Mangal', sections: ['Sec F', 'Sec I', 'Sec J'], hoursPerWeek: 4, group: 'Common' },
+  { id: 'c-as1109-6', code: 'AS1109', title: 'Calculus and Differential Equations', type: 'theory', teacher: 'DR. SUPRITA TALNIKAR', sections: ['Sec H'], hoursPerWeek: 4, group: 'Common' },
+
+  // Fundamentals of Prof. Communication (3 hrs)
+  { id: 'c-cc1110-1', code: 'CC1110', title: 'Fundamentals of Prof. Communication', type: 'theory', teacher: 'Mr. Vishwajeet Sehwag', sections: ['Sec A', 'Sec B', 'Sec C', 'Sec D', 'Sec E'], hoursPerWeek: 3, group: 'Group 1' },
+  { id: 'c-cc1110-2', code: 'CC1110', title: 'Fundamentals of Prof. Communication', type: 'theory', teacher: 'DR. AKSHAY', sections: ['Sec F', 'Sec G', 'Sec H', 'Sec I', 'Sec J'], hoursPerWeek: 3, group: 'Group 2' },
+
+  // --- GROUP 1 EXCLUSIVE: Sec A to Sec E (Design Thinking with AI & EVS) ---
+  { id: 'c-ai0000-1', code: 'AI0000', title: 'Design Thinking with AI', type: 'theory', teacher: 'Dr. Devisha Tiwari', sections: ['Sec A', 'Sec C'], hoursPerWeek: 3, group: 'Group 1' },
+  { id: 'c-ai0000-2', code: 'AI0000', title: 'Design Thinking with AI', type: 'theory', teacher: 'DR. MANJU RANA', sections: ['Sec B', 'Sec D', 'Sec E'], hoursPerWeek: 3, group: 'Group 1' },
+  { id: 'c-es1115-1', code: 'ES1115', title: 'Environmental Sc. & Sustainability', type: 'theory', teacher: 'Dr. Shahnawaz Khan', sections: ['Sec A', 'Sec B', 'Sec C', 'Sec D', 'Sec E'], hoursPerWeek: 2, group: 'Group 1' },
+
+  // --- GROUP 2 EXCLUSIVE: Sec F to Sec J (Applied Physics & IKS) ---
+  { id: 'c-as1108-1', code: 'AS1108', title: 'Applied Physics', type: 'theory', teacher: 'Dr. Abhinav Kumar Khorwal', sections: ['Sec F', 'Sec G', 'Sec J'], hoursPerWeek: 3, group: 'Group 2' },
+  { id: 'c-as1108-2', code: 'AS1108', title: 'Applied Physics', type: 'theory', teacher: 'Dr. Krishna Chaitanya Solasa', sections: ['Sec H', 'Sec I'], hoursPerWeek: 3, group: 'Group 2' },
+  { id: 'c-as1108-l1', code: 'AS1108-L', title: 'Applied Physics Lab', type: 'lab', teacher: 'Dr. Abhinav Kumar Khorwal', sections: ['Sec F', 'Sec G', 'Sec J'], hoursPerWeek: 2, venue: 'TB-102', group: 'Group 2' },
+  { id: 'c-as1108-l2', code: 'AS1108-L', title: 'Applied Physics Lab', type: 'lab', teacher: 'Dr. Krishna Chaitanya Solasa', sections: ['Sec H', 'Sec I'], hoursPerWeek: 2, venue: 'TB-102', group: 'Group 2' },
+  { id: 'c-il1107-1', code: 'IL1107', title: 'Intro to Indian Knowledge Systems', type: 'theory', teacher: 'Mr. Aman Mishra', sections: ['Sec F', 'Sec G', 'Sec H', 'Sec J'], hoursPerWeek: 2, group: 'Group 2' },
+  { id: 'c-il1107-2', code: 'IL1107', title: 'Intro to Indian Knowledge Systems', type: 'theory', teacher: 'Dr. Nitya Pawar', sections: ['Sec I'], hoursPerWeek: 2, group: 'Group 2' }
+];
+
