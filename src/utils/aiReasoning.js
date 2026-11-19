@@ -578,7 +578,7 @@ export function generateMasterTimetableSchedule({
     stats: {
       totalScheduled,
       zeroWalkScore: Math.max(92, zeroWalkScore),
-      lunchProtected: true,
+      lunchBreakPreserved: true,
       clashes: 0
     }
   };

@@ -9,7 +9,7 @@ export const TIME_SLOTS = [
   { id: '09:00', label: '9 AM', range: '9:00 - 10:00 AM', startHour: 9, endHour: 10 },
   { id: '10:00', label: '10 AM', range: '10:00 - 11:00 AM', startHour: 10, endHour: 11 },
   { id: '11:00', label: '11 AM', range: '11:00 AM - 12:00 PM', startHour: 11, endHour: 12 },
-  { id: '12:00', label: '12 PM (Lunch)', range: '12:00 - 1:00 PM', startHour: 12, endHour: 13, isLunch: true, title: 'Campus Lunch Break' },
+  { id: '12:00', label: '12 PM (Lunch)', range: '12:00 - 1:00 PM', startHour: 12, endHour: 13, isLunch: true, title: 'Lunch Break' },
   { id: '13:00', label: '1 PM', range: '1:00 - 2:00 PM', startHour: 13, endHour: 14 },
   { id: '14:00', label: '2 PM', range: '2:00 - 3:00 PM', startHour: 14, endHour: 15 },
   { id: '15:00', label: '3 PM', range: '3:00 - 4:00 PM', startHour: 15, endHour: 16 },
@@ -2309,10 +2309,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2339,10 +2337,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2385,10 +2381,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec B"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2439,10 +2433,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec C"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2485,10 +2477,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec D"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2539,10 +2529,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec E"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2585,10 +2573,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec F"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2627,10 +2613,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec G"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2669,10 +2653,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2723,10 +2705,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec I"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2773,10 +2753,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec H"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2815,10 +2793,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2861,10 +2837,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2899,10 +2873,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2937,10 +2909,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -2969,10 +2939,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3007,10 +2975,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec A"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3053,10 +3019,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3103,10 +3067,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec C"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3153,10 +3115,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec D"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3203,10 +3163,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec E"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3249,10 +3207,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec F"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3299,10 +3255,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec G"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3341,10 +3295,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec J"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3395,10 +3347,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec I"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3441,10 +3391,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec H"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3491,10 +3439,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3545,10 +3491,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3583,10 +3527,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3613,10 +3555,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3645,10 +3585,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3687,10 +3625,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec A"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3737,10 +3673,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec B"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3783,10 +3717,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec C"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3833,10 +3765,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec D"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3879,10 +3809,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec E"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3929,10 +3857,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec F"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -3979,10 +3905,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec G"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4033,10 +3957,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec J"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4075,10 +3997,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4121,10 +4041,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec H"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4167,10 +4085,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4221,10 +4137,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4259,10 +4173,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4297,10 +4209,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4329,10 +4239,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4367,10 +4275,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec A"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4421,10 +4327,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec B"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4471,10 +4375,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec C"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4513,10 +4415,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec D"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4567,10 +4467,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec E"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4625,10 +4523,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec F"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4675,10 +4571,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec G"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4729,10 +4623,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec J"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4779,10 +4671,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec I"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4837,10 +4727,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec H"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4883,10 +4771,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4921,10 +4807,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4959,10 +4843,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -4997,10 +4879,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5029,10 +4909,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5063,10 +4941,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5109,10 +4985,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec B"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5155,10 +5029,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec C"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5201,10 +5073,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5239,10 +5109,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5289,10 +5157,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec F"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5327,10 +5193,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec G"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5369,10 +5233,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec J"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5419,10 +5281,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec I"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5457,10 +5317,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec H"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5499,10 +5357,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5545,10 +5401,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5591,10 +5445,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "batch": "Sec H"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -5629,10 +5481,8 @@ export const INITIAL_WEEKLY_TIMETABLES = {
         "status": "free"
       },
       "12:00": {
-        "status": "occupied",
-        "title": "Lunch Break (Protected)",
-        "teacher": "Campus Protected",
-        "batch": "All Batches",
+        "status": "free",
+        "title": "Lunch Break",
         "isLunch": true
       },
       "13:00": {
@@ -7777,7 +7627,7 @@ export const INITIAL_BOOKINGS = [
     batch: 'Sec A',
     attendees: 45,
     timestamp: '10 mins ago',
-    status: 'pending',
+    status: 'approved',
     type: 'Academic Event',
     purpose: 'ACM Student Chapter competitive programming workshop',
     isPermanent: false
@@ -7797,7 +7647,7 @@ export const INITIAL_BOOKINGS = [
     batch: 'Sec I',
     attendees: 30,
     timestamp: '25 mins ago',
-    status: 'pending',
+    status: 'approved',
     type: 'Lab Session',
     purpose: 'Robotics Club hardware calibration & debugging',
     isPermanent: false

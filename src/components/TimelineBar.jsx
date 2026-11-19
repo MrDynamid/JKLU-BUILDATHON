@@ -23,7 +23,7 @@ export function TimelineBar({
           const isRescheduled = Boolean(slotData?.isRescheduled);
 
           let tooltipTitle = isLunch 
-            ? '12:00 PM – 1:00 PM: Campus Lunch Break' 
+            ? '12:00 PM – 1:00 PM: Lunch Break (Room Available)' 
             : `${slot.range}: Available`;
 
           if (isExchanged) {

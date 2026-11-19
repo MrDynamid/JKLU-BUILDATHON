@@ -621,7 +621,7 @@ export function TimetableView({
                       </td>
                       <td colSpan={DAYS_OF_WEEK.length} className="py-2.5 px-4 text-center bg-amber-50/50">
                         <div className="flex items-center justify-center gap-2 text-amber-950 font-bold text-xs">
-                          <span>Campus Lunch Break</span>
+                          <span>Lunch Break</span>
                         </div>
                       </td>
                     </tr>

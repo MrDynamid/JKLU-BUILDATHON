@@ -73,13 +73,14 @@ export function App() {
   const [targetBatch, setTargetBatch] = useState('Sec J (EB2-202)');
 
   // Master Data State: Weekly Timetables (Monday through Friday)
-  const TIMETABLE_VERSION = 'v5_official_perfect_master';
+  const TIMETABLE_VERSION = 'v7_official_perfect_master';
 
   const [weeklyTimetableState, setWeeklyTimetableState] = useState(() => {
     try {
       if (localStorage.getItem('jklu_timetable_version') !== TIMETABLE_VERSION) {
         localStorage.removeItem('jklu_weekly_timetable_official_pdf');
         localStorage.removeItem('jklu_faculty_official_pdf');
+        localStorage.removeItem('jklu_bookings_state');
         localStorage.setItem('jklu_timetable_version', TIMETABLE_VERSION);
         return INITIAL_WEEKLY_TIMETABLES;
       }
@@ -108,6 +109,9 @@ export function App() {
 
   const [bookings, setBookings] = useState(() => {
     try {
+      if (localStorage.getItem('jklu_timetable_version') !== TIMETABLE_VERSION) {
+        return INITIAL_BOOKINGS;
+      }
       const saved = localStorage.getItem('jklu_bookings_state');
       return saved ? JSON.parse(saved) : INITIAL_BOOKINGS;
     } catch (e) {

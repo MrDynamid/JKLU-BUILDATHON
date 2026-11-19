@@ -242,7 +242,7 @@ export function ClassExchangeModal({
   // Availability check for custom target room/time
   const customSlotStatus = useMemo(() => {
     if (targetTime === '12:00') {
-      return { isFree: false, label: 'Official Campus Lunch Break (12–1 PM) — No Academic Classes' };
+      return { isFree: false, label: 'Campus Lunch Break (12–1 PM)' };
     }
     const dayTimetable = weeklyTimetableState[targetDay] || {};
     const roomSlot = dayTimetable[targetRoomId]?.[targetTime];
@@ -577,7 +577,7 @@ export function ClassExchangeModal({
                             <span className="text-zinc-300">•</span>
                             <span className="flex items-center gap-1"><Users className="w-3 h-3 text-zinc-400" />{opt.venue.capacity} seats</span>
                             <span className="text-zinc-300">•</span>
-                            <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-zinc-400" />Lunch 12–1 PM Reserved</span>
+                            <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-zinc-400" />Lunch Break (12–1 PM)</span>
                           </div>
                         </div>
 

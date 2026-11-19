@@ -71,7 +71,7 @@ export function BookingModal({
     if (!venue || !roomSchedule) return { isFree: true, label: 'Available', color: 'emerald' };
     const slotData = roomSchedule[slotId];
     if (!slotData || slotData.status === 'free') {
-      return { isFree: true, label: 'Available', color: 'emerald' };
+      return { isFree: true, label: slotId === '12:00' ? 'Lunch Break (Available)' : 'Available', color: 'emerald' };
     }
     if (slotData.status === 'booked') {
       return { isFree: false, label: 'Reserved / Booked', color: 'slate', course: slotData.title || 'Reserved' };
@@ -271,7 +271,7 @@ export function BookingModal({
                 >
                   <div className="text-[10px] leading-tight">{slot.label}</div>
                   <div className="text-[9px] font-medium truncate mt-0.5">
-                    {slot.id === '12:00' ? 'Lunch' : (status.isFree ? (status.isUnlocked ? 'Faculty on Leave' : 'Available') : 'Occupied')}
+                    {slot.id === '12:00' ? (status.isFree ? 'Lunch Break' : (status.course || 'Reserved')) : (status.isFree ? (status.isUnlocked ? 'Faculty on Leave' : 'Available') : 'Occupied')}
                   </div>
                 </button>
               );

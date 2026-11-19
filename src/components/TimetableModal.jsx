@@ -391,7 +391,7 @@ export function TimetableModal({
                         </td>
                         <td colSpan={5} className="py-2 px-4 text-center bg-amber-50/50">
                           <div className="flex items-center justify-center gap-2 text-amber-950 font-bold text-xs">
-                            <span>Campus Lunch Break</span>
+                            <span>Lunch Break</span>
                           </div>
                         </td>
                       </tr>
