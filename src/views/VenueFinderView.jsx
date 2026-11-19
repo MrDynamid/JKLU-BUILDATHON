@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Sparkles, RotateCcw, Filter, Calendar, Clock } from 'lucide-react';
+import { Search, RotateCcw, Filter, Calendar, Clock } from 'lucide-react';
 import { TIME_SLOTS, FIRST_SEM_BATCHES, DAYS_OF_WEEK } from '../data/campusData';
 import { VenueCard } from '../components/VenueCard';
 import { CustomSelect } from '../components/CustomSelect';

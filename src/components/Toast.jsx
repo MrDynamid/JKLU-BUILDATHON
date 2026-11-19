@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, AlertCircle, Info, X, Sparkles } from 'lucide-react';
+import { CheckCircle2, Info, X, Sparkles } from 'lucide-react';
 
 export function ToastContainer({ toasts, onDismiss }) {
   if (!toasts || toasts.length === 0) return null;

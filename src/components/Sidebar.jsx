@@ -13,8 +13,7 @@ export function Sidebar({
   pendingBookingsCount,
   freeVenuesCount,
   totalVenuesCount,
-  unlockedSlotsCount,
-  onOpenTimetable
+  unlockedSlotsCount
 }) {
   const navItems = [
     {

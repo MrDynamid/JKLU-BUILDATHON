@@ -238,11 +238,13 @@ export function TimetableView({
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
         <style>
-          body { font-family: 'Inter', sans-serif; }
+          body { font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
           .mono { font-family: 'JetBrains Mono', monospace; }
+          table { border-collapse: collapse; width: 100%; }
+          th, td { border: 1px solid #e2e8f0; }
           @media print {
             .no-print { display: none !important; }
-            body { padding: 0; background: white; color: black; }
+            body { padding: 0 !important; background: white !important; color: black !important; }
           }
         </style>
       </head>

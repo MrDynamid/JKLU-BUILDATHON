@@ -1,9 +1,7 @@
 import React from 'react';
 import { 
   Clock, 
-  LogOut,
-  User,
-  Calendar
+  LogOut 
 } from 'lucide-react';
 import { TIME_SLOTS } from '../data/campusData';
 import { CustomSelect } from './CustomSelect';

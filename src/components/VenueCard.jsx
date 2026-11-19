@@ -1,6 +1,6 @@
 import React from 'react';
 import { TimelineBar } from './TimelineBar';
-import { Users, Tv, Zap, Monitor, MapPin, Calendar, Clock, CheckCircle, AlertCircle, Lock } from 'lucide-react';
+import { Users, Tv, Zap, Monitor, MapPin } from 'lucide-react';
 
 export function VenueCard({
   venue,
