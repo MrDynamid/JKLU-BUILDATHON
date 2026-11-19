@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { 
   X, 
   ExternalLink, 
-  Zap, 
   Calendar, 
   Clock, 
   Building, 
   Users, 
-  Sparkles, 
   Printer, 
   User, 
   Layers,
@@ -32,7 +30,6 @@ export function TimetableModal({
   const [selectedFacultyId, setSelectedFacultyId] = useState(initialFacultyId || facultyList[0]?.id || 'fac-1');
   const [selectedBatch, setSelectedBatch] = useState(initialBatch || 'Sec A');
 
-  // Available batches
   const availableBatches = ['Sec A', 'Sec B', 'Sec C', 'Sec D', 'Sec E', 'Sec F', 'Sec G', 'Sec H', 'Sec I', 'Sec J'];
 
   useEffect(() => {
@@ -68,7 +65,6 @@ export function TimetableModal({
 
   // Build the timetable matrix data for the selected mode
   const timetableMatrix = useMemo(() => {
-    // Structure: { [day]: { [timeId]: slotInfo } }
     const matrix = {};
     DAYS_OF_WEEK.forEach(day => {
       matrix[day] = {};
@@ -97,7 +93,7 @@ export function TimetableModal({
               facultyId: selectedFaculty.id,
               onLeave: selectedFaculty.onLeave,
               isRescheduled: s.isRescheduled,
-              batch: s.course.includes('Sec') ? s.course.match(/Sec\s*[A-J]/i)?.[0] : 'General'
+              batch: s.course?.includes('Sec') ? s.course.match(/Sec\s*[A-J]/i)?.[0] : (s.batch || 'General')
             };
           }
         });
@@ -111,7 +107,7 @@ export function TimetableModal({
             if (slotData && slotData.status === 'occupied') {
               const matchesBatch = slotData.batch?.includes(selectedBatch) || slotData.title?.includes(selectedBatch);
               if (matchesBatch) {
-                matrix[day][timeId] = {
+                const itemData = {
                   course: slotData.title,
                   roomId,
                   time: timeId,
@@ -121,6 +117,16 @@ export function TimetableModal({
                   batch: selectedBatch,
                   isRescheduled: slotData.isRescheduled
                 };
+
+                if (matrix[day][timeId]) {
+                  if (Array.isArray(matrix[day][timeId])) {
+                    matrix[day][timeId].push(itemData);
+                  } else {
+                    matrix[day][timeId] = [matrix[day][timeId], itemData];
+                  }
+                } else {
+                  matrix[day][timeId] = itemData;
+                }
               }
             }
           });
@@ -135,7 +141,7 @@ export function TimetableModal({
   const handleOpenInSeparateWindow = () => {
     const title = viewMode === 'faculty' 
       ? `JKLU Timetable - ${selectedFaculty?.name || 'Faculty'}` 
-      : `JKLU Timetable - Batch ${selectedBatch}`;
+      : `JKLU Timetable - Section ${selectedBatch}`;
 
     const newWindow = window.open('', '_blank', 'width=1100,height=750,menubar=no,toolbar=no,location=no,status=no');
     if (!newWindow) {
@@ -143,7 +149,6 @@ export function TimetableModal({
       return;
     }
 
-    // Generate HTML for the popup window
     const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -163,7 +168,6 @@ export function TimetableModal({
       </head>
       <body class="bg-slate-50 text-slate-800 p-6">
         <div class="max-w-6xl mx-auto space-y-4">
-          <!-- Top Header -->
           <div class="flex items-center justify-between pb-4 border-b border-slate-200">
             <div>
               <div class="flex items-center gap-2">
@@ -175,17 +179,16 @@ export function TimetableModal({
             </div>
             <div class="no-print flex items-center gap-2">
               <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
-                🖨️ Print Timetable
+                Print Timetable
               </button>
             </div>
           </div>
 
-          <!-- Schedule Table -->
           <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold">
-                  <th class="py-3 px-3 w-24 text-center border-r border-slate-200">Time Slot</th>
+                  <th class="py-3 px-3 w-24 text-center border-r border-slate-200">Time</th>
                   ${DAYS_OF_WEEK.map(day => `<th class="py-3 px-3 text-center border-r border-slate-200 last:border-r-0">${day}</th>`).join('')}
                 </tr>
               </thead>
@@ -213,17 +216,22 @@ export function TimetableModal({
                       <div class="text-[9px] text-slate-400 font-normal">${slot.range.split(' ')[0]}</div>
                     </td>
                     ${DAYS_OF_WEEK.map(day => {
-                      const item = timetableMatrix[day]?.[slot.id];
-                      if (!item) {
-                        return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">Free</td>`;
+                      const itemVal = timetableMatrix[day]?.[slot.id];
+                      if (!itemVal) {
+                        return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">—</td>`;
                       }
+                      const items = Array.isArray(itemVal) ? itemVal : [itemVal];
                       return `
-                        <td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 bg-blue-50/40">
-                          <div class="font-bold text-slate-900 text-xs">${item.course}</div>
-                          <div class="mt-1 flex items-center gap-1.5 text-[10px]">
-                            <span class="font-bold px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">${item.roomId}</span>
-                            <span class="text-slate-500">${item.teacher || item.batch}</span>
-                          </div>
+                        <td class="py-2 px-2.5 border-r border-slate-100 last:border-r-0">
+                          ${items.map(item => `
+                            <div class="p-1.5 rounded-lg bg-blue-50/70 border border-blue-200/60 mb-1 last:mb-0">
+                              <div class="font-bold text-slate-900 text-xs">${item.course}</div>
+                              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                                <span class="font-bold px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">${item.roomId}</span>
+                                <span class="text-slate-500">${item.teacher || item.batch}</span>
+                              </div>
+                            </div>
+                          `).join('')}
                         </td>
                       `;
                     }).join('')}
@@ -234,7 +242,6 @@ export function TimetableModal({
             </table>
           </div>
 
-          <!-- Footer Timestamp -->
           <div class="text-[11px] text-slate-400 flex items-center justify-between pt-2">
             <span>Generated via JKLU Smart Timetable & Dynamic Scheduler</span>
             <span>Document Active for Academic Session 2026-27</span>
@@ -272,13 +279,12 @@ export function TimetableModal({
             </span>
           </div>
           <p className="text-xs text-zinc-500 mt-0.5">
-            View full weekly schedules by faculty or batch, perform 1-click AI rescheduling, or pop out to a separate window.
+            View full weekly schedules by faculty or section with clash-free timetable verification.
           </p>
         </div>
 
-        {/* View Mode Toggle & Popout Action */}
+        {/* View Mode Toggle & Actions */}
         <div className="flex items-center gap-2">
-          {/* Mode Switcher */}
           <div className="flex items-center p-1 bg-zinc-200/70 rounded-xl text-xs font-semibold">
             <button
               type="button"
@@ -296,11 +302,10 @@ export function TimetableModal({
                 viewMode === 'batch' ? 'bg-white text-zinc-900 shadow-2xs font-bold' : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
-              Batch / Sec
+              Section
             </button>
           </div>
 
-          {/* Open in Separate Browser Window Button */}
           <button
             type="button"
             onClick={handleOpenInSeparateWindow}
@@ -308,10 +313,9 @@ export function TimetableModal({
             className="px-3 py-1.5 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-100 text-xs font-bold text-zinc-700 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
           >
             <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
-            <span className="hidden sm:inline">Pop Out Window</span>
+            <span className="hidden sm:inline">Pop Out</span>
           </button>
 
-          {/* Close Modal Button */}
           <button
             type="button"
             onClick={onClose}
@@ -326,7 +330,7 @@ export function TimetableModal({
       <div className="px-5 py-3 border-b border-zinc-100 bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
           <span className="font-semibold text-zinc-500">
-            {viewMode === 'faculty' ? 'Select Faculty Member:' : 'Select First Semester Batch:'}
+            {viewMode === 'faculty' ? 'Select Faculty Member:' : 'Select Section:'}
           </span>
           {viewMode === 'faculty' ? (
             <CustomSelect
@@ -336,8 +340,7 @@ export function TimetableModal({
                 value: f.id,
                 label: `${f.name} — ${f.course}`
               }))}
-              className="min-w-[220px]"
-              buttonClassName="bg-zinc-50 border-zinc-200 py-1.5"
+              buttonClassName="bg-white border-zinc-200 py-1.5 max-w-sm"
             />
           ) : (
             <CustomSelect
@@ -347,135 +350,115 @@ export function TimetableModal({
                 value: b,
                 label: `${b} (First Semester)`
               }))}
-              className="min-w-[180px]"
-              buttonClassName="bg-zinc-50 border-zinc-200 py-1.5"
+              buttonClassName="bg-white border-zinc-200 py-1.5"
             />
           )}
         </div>
 
         {viewMode === 'faculty' && selectedFaculty && (
           <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${selectedFaculty.onLeave ? 'bg-amber-500' : 'bg-emerald-500'}`} />
-            <span className="font-medium text-zinc-600">
-              {selectedFaculty.onLeave ? 'Currently on Leave' : 'Present on Campus'}
+            <span className={`w-2 h-2 rounded-full ${selectedFaculty.onLeave ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+            <span className="font-semibold text-zinc-700">
+              {selectedFaculty.onLeave ? 'Status: On Leave' : 'Status: Present'}
             </span>
           </div>
         )}
       </div>
 
-      {/* Main Weekly Matrix Grid */}
-      <div className="flex-1 overflow-auto p-4 sm:p-5">
-        <div className="min-w-[760px] bg-white rounded-2xl border border-zinc-200 shadow-2xs overflow-hidden">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="bg-zinc-100/80 border-b border-zinc-200 text-zinc-700 font-bold">
-                <th className="py-3 px-3 w-24 text-center border-r border-zinc-200">Time</th>
-                {DAYS_OF_WEEK.map(day => (
-                  <th key={day} className="py-3 px-3 text-center border-r border-zinc-200 last:border-r-0">
-                    {day}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100 font-sans">
-              {TIME_SLOTS.map(slot => {
-                if (slot.id === '12:00') {
-                  return (
-                    <tr key={slot.id} className="bg-amber-50/70 border-y border-amber-200/90">
-                      <td className="py-2.5 px-2 text-center font-bold text-amber-900 bg-amber-100/70 border-r border-amber-200 font-mono text-[11px]">
-                        <div>12 PM</div>
-                        <div className="text-[9px] text-amber-700 font-semibold leading-tight">12:00 - 1:00</div>
-                      </td>
-                      <td colSpan={DAYS_OF_WEEK.length} className="py-2.5 px-4 text-center bg-amber-50/50">
-                        <div className="flex items-center justify-center gap-2 text-amber-950 font-bold text-xs">
-                          <span>Lunch</span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                }
-
-                return (
-                  <tr key={slot.id} className="hover:bg-zinc-50/50">
-                    <td className="py-3 px-2 text-center font-bold text-zinc-600 bg-zinc-50/50 border-r border-zinc-200 font-mono text-[11px]">
-                      <div>{slot.label}</div>
-                      <div className="text-[9px] text-zinc-400 font-normal leading-tight">{slot.range.split(' ')[0]}</div>
-                    </td>
-                    {DAYS_OF_WEEK.map(day => {
-                      const item = timetableMatrix[day]?.[slot.id];
-                      if (!item) {
-                        return (
-                          <td key={day} className="py-2.5 px-3 border-r border-zinc-100 last:border-r-0 text-center text-zinc-300 text-[11px]">
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-zinc-200 mr-1" />
-                            <span>Free</span>
-                          </td>
-                        );
-                      }
-
-                      return (
-                        <td key={day} className="py-2 px-2.5 border-r border-zinc-100 last:border-r-0 bg-blue-50/30 hover:bg-blue-50/60 transition-colors">
-                          <div className="flex flex-col justify-between h-full space-y-1.5">
-                            <div>
-                              <div className="font-bold text-zinc-900 text-[11px] leading-tight line-clamp-2">
-                                {item.course}
-                              </div>
-                              <div className="mt-1 flex flex-wrap items-center gap-1 text-[10px]">
-                                <span className="font-bold px-1.5 py-0.2 rounded bg-white text-zinc-800 border border-zinc-200">
-                                  {item.roomId}
-                                </span>
-                                {item.batch && (
-                                  <span className="font-medium px-1 py-0.2 rounded bg-blue-100 text-blue-800">
-                                    {item.batch}
-                                  </span>
-                                )}
-                                {item.isRescheduled && (
-                                  <span className="font-bold px-1 py-0.2 rounded bg-purple-100 text-purple-800">
-                                    Rescheduled
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* 1-Click Reschedule Trigger Button */}
-                            <div className="pt-1 border-t border-blue-100/60 flex items-center justify-between">
-                              <span className="text-[10px] text-zinc-400 truncate max-w-[80px]">
-                                {item.teacher}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => onRescheduleSlot(item)}
-                                title="Pick a clash-free alternative slot or custom time"
-                                className="px-2 py-0.5 rounded-md bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold text-[10px] flex items-center gap-1 transition-colors cursor-pointer shadow-2xs"
-                              >
-                                <Zap className="w-2.5 h-2.5 fill-current" />
-                                <span>Reschedule</span>
-                              </button>
-                            </div>
+      {/* Timetable Matrix Grid */}
+      <div className="flex-1 overflow-auto p-4 sm:p-5 bg-zinc-50/40">
+        <div className="bg-white rounded-2xl border border-zinc-200 shadow-2xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-zinc-100/80 border-b border-zinc-200 text-zinc-700 font-bold">
+                  <th className="py-2.5 px-3 w-24 text-center border-r border-zinc-200">Time</th>
+                  {DAYS_OF_WEEK.map(day => (
+                    <th key={day} className="py-2.5 px-3 text-center border-r border-zinc-200 last:border-r-0">
+                      {day}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {TIME_SLOTS.map(slot => {
+                  if (slot.id === '12:00') {
+                    return (
+                      <tr key={slot.id} className="bg-amber-50/70 border-y border-amber-200/90">
+                        <td className="py-2.5 px-2 text-center font-bold text-amber-900 bg-amber-100/70 border-r border-amber-200 font-mono text-[11px]">
+                          12 PM
+                          <div className="text-[9px] text-amber-700 font-semibold leading-tight">12:00 - 1:00</div>
+                        </td>
+                        <td colSpan={5} className="py-2 px-4 text-center bg-amber-50/50">
+                          <div className="flex items-center justify-center gap-2 text-amber-950 font-bold text-xs">
+                            <span>Campus Lunch Break</span>
                           </div>
                         </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                      </tr>
+                    );
+                  }
 
-      {/* Modal Bottom Bar */}
-      <div className="p-3 px-5 border-t border-zinc-100 bg-zinc-50 flex items-center justify-between text-xs text-zinc-500">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>Click <strong>"Reschedule"</strong> on any lecture to choose a clash-free alternative slot or custom venue.</span>
+                  return (
+                    <tr key={slot.id} className="hover:bg-zinc-50/50">
+                      <td className="py-2.5 px-2 text-center font-bold text-zinc-600 bg-zinc-50/50 border-r border-zinc-200 font-mono text-[11px]">
+                        {slot.label}
+                        <div className="text-[9px] text-zinc-400 font-normal leading-tight">{slot.range.split(' ')[0]}</div>
+                      </td>
+                      {DAYS_OF_WEEK.map(day => {
+                        const itemVal = timetableMatrix[day]?.[slot.id];
+                        if (!itemVal) {
+                          return (
+                            <td key={day} className="py-2 px-2.5 border-r border-zinc-100 last:border-r-0 text-center text-zinc-300 text-[11px]">
+                              —
+                            </td>
+                          );
+                        }
+
+                        const items = Array.isArray(itemVal) ? itemVal : [itemVal];
+                        return (
+                          <td key={day} className="py-1.5 px-2 border-r border-zinc-100 last:border-r-0 align-top">
+                            {items.map((item, idx) => {
+                              const isLab = (item.course || '').toLowerCase().includes('lab');
+                              const isTutorial = (item.course || '').toLowerCase().includes('tutorial') || (item.course || '').includes('(T');
+
+                              let cellBorder = 'border-l-3 border-blue-500 bg-white hover:bg-blue-50/40';
+                              if (item.isRescheduled) {
+                                cellBorder = 'border-l-3 border-purple-600 bg-purple-50/70 hover:bg-purple-100/80';
+                              } else if (isLab) {
+                                cellBorder = 'border-l-3 border-teal-500 bg-teal-50/40 hover:bg-teal-50/70';
+                              } else if (isTutorial) {
+                                cellBorder = 'border-l-3 border-indigo-500 bg-indigo-50/30 hover:bg-indigo-50/60';
+                              }
+
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`p-1.5 rounded-lg border border-zinc-200/80 mb-1 last:mb-0 ${cellBorder}`}
+                                >
+                                  <div className="font-bold text-zinc-900 text-xs leading-tight">
+                                    {item.course}
+                                  </div>
+                                  <div className="mt-1 flex items-center gap-1.5 text-[10px]">
+                                    <span className="font-bold font-mono px-1 py-0.2 rounded bg-white text-zinc-800 border border-zinc-200">
+                                      {item.roomId}
+                                    </span>
+                                    <span className="text-zinc-500 truncate max-w-[110px]">
+                                      {item.teacher || item.batch}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs transition-colors cursor-pointer"
-        >
-          Close
-        </button>
       </div>
     </dialog>
   );

@@ -73,7 +73,7 @@ export function App() {
   const [targetBatch, setTargetBatch] = useState('Sec J (EB2-202)');
 
   // Master Data State: Weekly Timetables (Monday through Friday)
-  const TIMETABLE_VERSION = 'v4_unrescheduled_clean';
+  const TIMETABLE_VERSION = 'v5_official_perfect_master';
 
   const [weeklyTimetableState, setWeeklyTimetableState] = useState(() => {
     try {
@@ -1080,9 +1080,11 @@ export function App() {
               onResetAllLeave={handleResetAllLeave}
               unlockedRoomsList={unlockedRoomsList}
               selectedDay={selectedDay}
+              onSelectDay={setSelectedDay}
               onOpenTimetable={handleOpenTimetable}
               onRescheduleSlot={handleRescheduleSlot}
               onOpenExchangeModal={handleOpenExchangeModal}
+              onBookVenue={handleOpenBooking}
             />
           )}
 

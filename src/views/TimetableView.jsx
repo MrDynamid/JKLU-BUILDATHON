@@ -1,22 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Calendar, 
-  ExternalLink, 
-  Zap, 
   Clock, 
-  Sparkles, 
   User, 
   Layers, 
   CheckCircle2, 
-  UserX,
-  AlertCircle,
-  ArrowLeftRight,
+  ArrowLeftRight, 
   RotateCcw,
   Download,
   FileSpreadsheet,
   FileText,
   Printer,
-  ChevronDown
+  ChevronDown,
+  Building,
+  GraduationCap,
+  BookOpen
 } from 'lucide-react';
 import { TIME_SLOTS, DAYS_OF_WEEK, VENUES } from '../data/campusData';
 import { CustomSelect } from '../components/CustomSelect';
@@ -58,6 +56,10 @@ export function TimetableView({
     return facultyList.find(f => f.id === selectedFacultyId) || facultyList[0];
   }, [facultyList, selectedFacultyId]);
 
+  const selectedVenue = useMemo(() => {
+    return VENUES.find(v => v.id === selectedRoomId) || VENUES[0];
+  }, [selectedRoomId]);
+
   // Build the timetable matrix data for the selected mode
   const timetableMatrix = useMemo(() => {
     const matrix = {};
@@ -90,7 +92,7 @@ export function TimetableView({
               isRescheduled: s.isRescheduled,
               isExchanged: s.isExchanged,
               exchangedWith: s.exchangedWith,
-              batch: s.course.includes('Sec') ? s.course.match(/Sec\s*[A-J]/i)?.[0] : 'General'
+              batch: s.course.includes('Sec') ? s.course.match(/Sec\s*[A-J]/i)?.[0] : (s.batch || 'General')
             };
           }
         });
@@ -125,7 +127,7 @@ export function TimetableView({
             if (slotData && slotData.status === 'occupied') {
               const matchesBatch = slotData.batch?.includes(selectedBatch) || slotData.title?.includes(selectedBatch);
               if (matchesBatch) {
-                matrix[day][timeId] = {
+                const itemData = {
                   course: slotData.title,
                   roomId,
                   time: timeId,
@@ -137,6 +139,17 @@ export function TimetableView({
                   isExchanged: slotData.isExchanged,
                   exchangedWith: slotData.exchangedWith
                 };
+
+                // Support concurrent group splits (e.g. A1 in Lab, A2 in Tutorial)
+                if (matrix[day][timeId]) {
+                  if (Array.isArray(matrix[day][timeId])) {
+                    matrix[day][timeId].push(itemData);
+                  } else {
+                    matrix[day][timeId] = [matrix[day][timeId], itemData];
+                  }
+                } else {
+                  matrix[day][timeId] = itemData;
+                }
               }
             }
           });
@@ -146,6 +159,20 @@ export function TimetableView({
 
     return matrix;
   }, [viewMode, selectedFaculty, selectedBatch, selectedRoomId, weeklyTimetableState]);
+
+  // Total scheduled count
+  const totalWeeklyClasses = useMemo(() => {
+    let count = 0;
+    DAYS_OF_WEEK.forEach(day => {
+      TIME_SLOTS.forEach(slot => {
+        if (slot.id !== '12:00' && timetableMatrix[day]?.[slot.id]) {
+          const val = timetableMatrix[day][slot.id];
+          count += Array.isArray(val) ? val.length : 1;
+        }
+      });
+    });
+    return count;
+  }, [timetableMatrix]);
 
   // Export timetable dataset to CSV or Excel-Ready format
   const handleExportCSV = (excelMode = false) => {
@@ -189,7 +216,7 @@ export function TimetableView({
     let title = `JKLU Timetable - ${selectedFaculty?.name || 'Faculty'}`;
     let subtitle = `${selectedFaculty?.department} · ${selectedFaculty?.course}`;
     if (viewMode === 'batch') {
-      title = `JKLU Timetable - Batch ${selectedBatch}`;
+      title = `JKLU Timetable - Section ${selectedBatch}`;
       subtitle = 'First Semester Group · Official Academic Schedule';
     } else if (viewMode === 'room') {
       title = `JKLU Timetable - Room ${selectedRoomId}`;
@@ -233,7 +260,7 @@ export function TimetableView({
             </div>
             <div class="no-print flex items-center gap-2">
               <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
-                🖨️ Print Timetable
+                Print Timetable
               </button>
             </div>
           </div>
@@ -243,8 +270,8 @@ export function TimetableView({
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold">
-                  <th class="py-3 px-3 w-24 text-center border-r border-slate-200">Time Slot</th>
-                  ${DAYS_OF_WEEK.map(day => `<th class="py-3 px-3 text-center border-r border-slate-200 last:border-r-0">${day}</th>`).join('')}
+                  <th class="py-3 px-3 w-28 text-center border-r border-slate-200">Time</th>
+                  ${DAYS_OF_WEEK.map(day => `<th class="py-3 px-4 text-center border-r border-slate-200 last:border-r-0">${day}</th>`).join('')}
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 font-sans">
@@ -258,7 +285,7 @@ export function TimetableView({
                         </td>
                         <td colspan="5" class="py-2.5 px-4 text-center bg-amber-50/50">
                           <div class="inline-flex items-center justify-center gap-2 text-amber-950 font-bold text-xs">
-                            <span>Lunch</span>
+                            <span>Campus Lunch Break</span>
                           </div>
                         </td>
                       </tr>
@@ -271,17 +298,22 @@ export function TimetableView({
                       <div class="text-[9px] text-slate-400 font-normal">${slot.range.split(' ')[0]}</div>
                     </td>
                     ${DAYS_OF_WEEK.map(day => {
-                      const item = timetableMatrix[day]?.[slot.id];
-                      if (!item) {
-                        return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">Free</td>`;
+                      const itemVal = timetableMatrix[day]?.[slot.id];
+                      if (!itemVal) {
+                        return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">—</td>`;
                       }
+                      const items = Array.isArray(itemVal) ? itemVal : [itemVal];
                       return `
-                        <td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 bg-blue-50/40">
-                          <div class="font-bold text-slate-900 text-xs">${item.course}</div>
-                          <div class="mt-1 flex items-center gap-1.5 text-[10px]">
-                            <span class="font-bold px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">${item.roomId}</span>
-                            <span class="text-slate-500">${item.teacher || item.batch}</span>
-                          </div>
+                        <td class="py-2 px-2.5 border-r border-slate-100 last:border-r-0">
+                          ${items.map(item => `
+                            <div class="p-1.5 rounded-lg bg-blue-50/70 border border-blue-200/60 mb-1 last:mb-0">
+                              <div class="font-bold text-slate-900 text-xs">${item.course}</div>
+                              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                                <span class="font-bold px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">${item.roomId}</span>
+                                <span class="text-slate-500">${item.teacher || item.batch}</span>
+                              </div>
+                            </div>
+                          `).join('')}
                         </td>
                       `;
                     }).join('')}
@@ -306,6 +338,66 @@ export function TimetableView({
     newWindow.document.close();
   };
 
+  // Helper to render a single class slot card inside a table cell
+  const renderSlotCard = (item, isSubItem = false) => {
+    const isLab = (item.course || '').toLowerCase().includes('lab');
+    const isTutorial = (item.course || '').toLowerCase().includes('tutorial') || (item.course || '').includes('(T');
+
+    let cellBorder = 'border-l-4 border-blue-500 bg-white hover:bg-blue-50/40';
+    if (item.isRescheduled) {
+      cellBorder = 'border-l-4 border-purple-600 bg-purple-50/70 hover:bg-purple-100/80';
+    } else if (item.isExchanged) {
+      cellBorder = 'border-l-4 border-blue-600 bg-blue-50/70 hover:bg-blue-100/80';
+    } else if (isLab) {
+      cellBorder = 'border-l-4 border-teal-500 bg-teal-50/40 hover:bg-teal-50/70';
+    } else if (isTutorial) {
+      cellBorder = 'border-l-4 border-indigo-500 bg-indigo-50/30 hover:bg-indigo-50/60';
+    }
+
+    return (
+      <div 
+        key={item.roomId + item.course}
+        onClick={() => onOpenExchangeModal && onOpenExchangeModal(item)}
+        title="Click to reschedule or exchange this class"
+        className={`p-2 rounded-xl border border-zinc-200/80 transition-all cursor-pointer group shadow-2xs ${cellBorder} ${isSubItem ? 'mb-1.5 last:mb-0' : ''}`}
+      >
+        <div className="flex flex-col justify-between h-full space-y-1">
+          <div>
+            <div className="font-bold text-zinc-900 text-xs leading-tight line-clamp-2 group-hover:text-blue-900">
+              {item.course}
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-1 text-[10px]">
+              <span className="font-bold font-mono px-1.5 py-0.2 rounded bg-white text-zinc-800 border border-zinc-200 shadow-2xs">
+                {item.roomId}
+              </span>
+              {item.batch && (
+                <span className="font-semibold px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                  {item.batch}
+                </span>
+              )}
+              {item.isRescheduled && (
+                <span className="font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-900 border border-purple-200">
+                  Rescheduled
+                </span>
+              )}
+              {item.isExchanged && (
+                <span className="font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-900 border border-blue-200" title={item.exchangedWith ? `Exchanged with ${item.exchangedWith}` : 'Exchanged'}>
+                  ⇄ Swapped
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-1 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-500">
+            <span className="truncate max-w-[130px] font-medium" title={item.teacher}>
+              {item.teacher}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex-1 overflow-y-auto p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-4 font-sans">
       {/* Top Header Card */}
@@ -317,15 +409,15 @@ export function TimetableView({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-zinc-900 tracking-tight font-sans">
-                  Campus Weekly Timetable Window
+                <h2 className="text-lg font-bold text-zinc-900 tracking-tight">
+                  Campus Timetable & Academic Scheduler
                 </h2>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                  Sem 1 Live Schedule
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                  Semester 1 Live Matrix
                 </span>
               </div>
               <p className="text-xs text-zinc-500 mt-0.5">
-                Inspect full 5-day academic schedules by faculty or batch, perform 1-click AI rescheduling, or pop out to a separate window.
+                Inspect 5-day academic schedules filtered by Faculty, Student Section, or Classroom, with live class exchange and conflict-free rescheduling.
               </p>
             </div>
           </div>
@@ -336,7 +428,7 @@ export function TimetableView({
       <div className="px-5 py-3.5 rounded-2xl bg-white border border-zinc-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-zinc-500">Filter By:</span>
+            <span className="font-semibold text-zinc-500">View By:</span>
             <CustomSelect
               value={viewMode}
               onChange={setViewMode}
@@ -357,7 +449,7 @@ export function TimetableView({
                 value: f.id,
                 label: `${f.name} — ${f.course}`
               }))}
-              buttonClassName="bg-white border-zinc-200 py-1.5 max-w-xs"
+              buttonClassName="bg-white border-zinc-200 py-1.5 max-w-sm"
             />
           )}
 
@@ -367,7 +459,7 @@ export function TimetableView({
               onChange={setSelectedBatch}
               options={availableBatches.map(b => ({
                 value: b,
-                label: b
+                label: `${b} (First Semester)`
               }))}
               buttonClassName="bg-white border-zinc-200 py-1.5"
             />
@@ -379,20 +471,25 @@ export function TimetableView({
               onChange={setSelectedRoomId}
               options={VENUES.map(v => ({
                 value: v.id,
-                label: `${v.id} (${v.name} · ${v.capacity}s)`
+                label: `${v.id} (${v.name} · ${v.capacity} seats)`
               }))}
               buttonClassName="bg-white border-zinc-200 py-1.5"
             />
           )}
         </div>
 
-        {/* Right side: Status indicator + Export Engine Dropdown */}
+        {/* Right side: Summary Metric + Export Engine Dropdown */}
         <div className="flex items-center gap-2 relative">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-zinc-50 rounded-lg border border-zinc-200 text-xs">
+            <span className="text-zinc-500">Weekly Classes:</span>
+            <strong className="text-zinc-900 font-bold">{totalWeeklyClasses} Classes</strong>
+          </div>
+
           {viewMode === 'faculty' && selectedFaculty && (
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-zinc-50 rounded-lg border border-zinc-200">
               <span className={`w-2 h-2 rounded-full ${selectedFaculty.onLeave ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
               <span className="font-semibold text-zinc-700">
-                {selectedFaculty.onLeave ? 'On Leave Today' : 'Present on Campus'}
+                {selectedFaculty.onLeave ? 'On Leave' : 'Present'}
               </span>
             </div>
           )}
@@ -456,6 +553,49 @@ export function TimetableView({
         </div>
       </div>
 
+      {/* Context Information Strip */}
+      <div className="p-3.5 rounded-xl bg-white border border-zinc-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
+        {viewMode === 'faculty' && selectedFaculty && (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-zinc-900 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
+              {selectedFaculty.name.replace(/^(Dr\.|Prof\.|Mr\.|Ms\.)\s*/i, '').trim()[0]}
+            </div>
+            <div>
+              <div className="font-bold text-zinc-900">{selectedFaculty.name}</div>
+              <div className="text-zinc-500 text-[11px]">{selectedFaculty.department} · {selectedFaculty.course}</div>
+            </div>
+          </div>
+        )}
+
+        {viewMode === 'batch' && (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
+              {selectedBatch.replace('Sec ', '')}
+            </div>
+            <div>
+              <div className="font-bold text-zinc-900">First Semester — Section {selectedBatch.replace('Sec ', '')}</div>
+              <div className="text-zinc-500 text-[11px]">Academic Schedule · EB1 / EB2 / TB Labs</div>
+            </div>
+          </div>
+        )}
+
+        {viewMode === 'room' && selectedVenue && (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
+              {selectedVenue.id.split('-')[0]}
+            </div>
+            <div>
+              <div className="font-bold text-zinc-900">{selectedVenue.id} ({selectedVenue.name})</div>
+              <div className="text-zinc-500 text-[11px]">{selectedVenue.building} · {selectedVenue.floorLabel} · {selectedVenue.capacity} seats ({selectedVenue.type})</div>
+            </div>
+          </div>
+        )}
+
+        <div className="text-zinc-400 text-[11px]">
+          Click any lecture cell to initiate an <strong className="text-blue-700">Exchange</strong> or <strong className="text-purple-700">Reschedule</strong>.
+        </div>
+      </div>
+
       {/* Main Weekly Matrix Grid */}
       <div className="bg-white rounded-2xl border border-zinc-200 shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
@@ -481,7 +621,7 @@ export function TimetableView({
                       </td>
                       <td colSpan={DAYS_OF_WEEK.length} className="py-2.5 px-4 text-center bg-amber-50/50">
                         <div className="flex items-center justify-center gap-2 text-amber-950 font-bold text-xs">
-                          <span>Lunch</span>
+                          <span>Campus Lunch Break</span>
                         </div>
                       </td>
                     </tr>
@@ -495,56 +635,19 @@ export function TimetableView({
                       <div className="text-[9px] text-zinc-400 font-normal leading-tight">{slot.range.split(' ')[0]}</div>
                     </td>
                     {DAYS_OF_WEEK.map(day => {
-                      const item = timetableMatrix[day]?.[slot.id];
-                      if (!item) {
+                      const itemVal = timetableMatrix[day]?.[slot.id];
+                      if (!itemVal) {
                         return (
                           <td key={day} className="py-3 px-3 border-r border-zinc-100 last:border-r-0 text-center text-zinc-300 text-[11px]">
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-zinc-200 mr-1" />
-                            <span>Free</span>
+                            <span className="text-zinc-300 font-normal select-none">—</span>
                           </td>
                         );
                       }
 
+                      const items = Array.isArray(itemVal) ? itemVal : [itemVal];
                       return (
-                        <td 
-                          key={day} 
-                          onClick={() => onOpenExchangeModal && onOpenExchangeModal(item)}
-                          title="Click to reschedule or exchange this class"
-                          className="py-2.5 px-3 border-r border-zinc-100 last:border-r-0 bg-blue-50/30 hover:bg-blue-100/60 transition-colors cursor-pointer group"
-                        >
-                          <div className="flex flex-col justify-between h-full space-y-1.5">
-                            <div>
-                              <div className="font-bold text-zinc-900 text-xs leading-tight line-clamp-2 group-hover:text-blue-900">
-                                {item.course}
-                              </div>
-                              <div className="mt-1 flex flex-wrap items-center gap-1 text-[10px]">
-                                <span className="font-bold px-1.5 py-0.2 rounded bg-white text-zinc-800 border border-zinc-200">
-                                  {item.roomId}
-                                </span>
-                                {item.batch && (
-                                  <span className="font-medium px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
-                                    {item.batch}
-                                  </span>
-                                )}
-                                {item.isRescheduled && (
-                                  <span className="font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-800">
-                                    Rescheduled
-                                  </span>
-                                )}
-                                {item.isExchanged && (
-                                  <span className="font-bold px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800" title={item.exchangedWith ? `Exchanged with ${item.exchangedWith}` : 'Exchanged'}>
-                                    ⇄ Swapped
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            <div className="pt-1 border-t border-blue-100/60 flex items-center justify-between text-[11px] text-zinc-500">
-                              <span className="truncate max-w-[140px] font-medium" title={item.teacher}>
-                                {item.teacher}
-                              </span>
-                            </div>
-                          </div>
+                        <td key={day} className="py-2 px-2.5 border-r border-zinc-100 last:border-r-0 align-top">
+                          {items.map((item, idx) => renderSlotCard(item, items.length > 1))}
                         </td>
                       );
                     })}
