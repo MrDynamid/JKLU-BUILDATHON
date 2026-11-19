@@ -94,17 +94,9 @@ export function FacultyLeaveView({
       {/* Top Header Card */}
       <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-zinc-900 tracking-tight">
-              Faculty Leave & Class Reallocation Suite
-            </h2>
-            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-              {facultyList.length} Faculty Members
-            </span>
-          </div>
-          <p className="text-xs text-zinc-500 mt-1 max-w-2xl">
-            Toggle a professor's attendance to immediately unlock their assigned classrooms for student bookings, or perform seamless class exchanges and conflict-free rescheduling.
-          </p>
+          <h2 className="text-lg font-bold text-zinc-900 tracking-tight">
+            Faculty Leave & Class Reallocation Suite
+          </h2>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">

@@ -408,17 +408,9 @@ export function TimetableView({
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-zinc-900 tracking-tight">
-                  Campus Timetable & Academic Scheduler
-                </h2>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                  Semester 1 Live Matrix
-                </span>
-              </div>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                Inspect 5-day academic schedules filtered by Faculty, Student Section, or Classroom, with live class exchange and conflict-free rescheduling.
-              </p>
+              <h2 className="text-lg font-bold text-zinc-900 tracking-tight">
+                Campus Timetable & Academic Scheduler
+              </h2>
             </div>
           </div>
         </div>

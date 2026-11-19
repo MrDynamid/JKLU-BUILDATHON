@@ -257,14 +257,9 @@ export function AdminGateView({
       {/* Header & Sub-Tab Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-200/90 pb-4 gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-zinc-900 tracking-tight font-sans">
-              Campus Admin & Timetable Suite
-            </h2>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
-              Governance & Solvers
-            </span>
-          </div>
+          <h2 className="text-lg font-bold text-zinc-900 tracking-tight font-sans">
+            Campus Admin & Timetable Suite
+          </h2>
         </div>
 
         {/* Sub-Tab Navigation */}
