@@ -3,10 +3,13 @@ import {
   Terminal, 
   X, 
   Send, 
+  Sparkles, 
   Trash2, 
   Compass,
   ArrowUpRight,
-  Layers
+  Cpu,
+  Layers,
+  MessageSquare
 } from 'lucide-react';
 
 export function AiDrawer({

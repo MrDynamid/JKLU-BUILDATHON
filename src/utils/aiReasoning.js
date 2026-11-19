@@ -280,7 +280,7 @@ export function findTopRescheduleOptions({
       let batchHasClash = false;
       const cleanSlotBatch = slot.batch ? slot.batch.trim() : null;
       if (cleanSlotBatch && cleanSlotBatch !== 'General') {
-        Object.entries(dayTimetable).forEach(([, schedule]) => {
+        Object.entries(dayTimetable).forEach(([rId, schedule]) => {
           const roomSlot = schedule[timeId];
           if (roomSlot && roomSlot.status === 'occupied' && roomSlot.batch) {
             if (roomSlot.batch.includes(cleanSlotBatch) || cleanSlotBatch.includes(roomSlot.batch)) {

@@ -7777,7 +7777,7 @@ export const INITIAL_BOOKINGS = [
     batch: 'Sec A',
     attendees: 45,
     timestamp: '10 mins ago',
-    status: 'approved',
+    status: 'pending',
     type: 'Academic Event',
     purpose: 'ACM Student Chapter competitive programming workshop',
     isPermanent: false
@@ -7797,7 +7797,7 @@ export const INITIAL_BOOKINGS = [
     batch: 'Sec I',
     attendees: 30,
     timestamp: '25 mins ago',
-    status: 'approved',
+    status: 'pending',
     type: 'Lab Session',
     purpose: 'Robotics Club hardware calibration & debugging',
     isPermanent: false

@@ -36,6 +36,16 @@ export function LoginPortal({ onLogin }) {
     }, 600);
   };
 
+  const handleSocialLogin = (provider) => {
+    onLogin({
+      username: `${provider.toLowerCase()}.user@jklu.edu.in`,
+      role: 'professor',
+      displayName: `${provider} SSO User`,
+      roleLabel: 'SSO Authenticated',
+      email: `${provider.toLowerCase()}@jklu.edu.in`
+    });
+  };
+
   return (
     <div className="relative min-h-screen w-full flex flex-col justify-between overflow-x-hidden font-sans text-white select-none">
       {/* Background Image with Cinematic Gradient Overlays */}
