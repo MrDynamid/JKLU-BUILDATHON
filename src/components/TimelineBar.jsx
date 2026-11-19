@@ -81,32 +81,34 @@ export function TimelineBar({
         })}
       </div>
 
-      {/* Timeline Labels & Color Legend: 9 AM to 5 PM */}
-      <div className="flex flex-wrap items-center justify-between text-[11px] text-zinc-500 mt-1.5 px-0.5 font-sans gap-y-1">
-        <span className="font-semibold text-zinc-700 shrink-0">9 AM</span>
-        <div className="flex flex-wrap items-center gap-2 text-[10px]">
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-zinc-600 font-medium">Available</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-amber-400" />
-            <span className="text-zinc-600 font-medium">Faculty on Leave</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-blue-600" />
-            <span className="text-blue-800 font-semibold">Class Exchange</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-purple-600" />
-            <span className="text-purple-800 font-semibold">Rescheduled</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-rose-400" />
-            <span className="text-zinc-600 font-medium">Occupied</span>
-          </span>
-        </div>
-        <span className="font-semibold text-zinc-700 shrink-0">5 PM</span>
+      {/* 9 AM and 5 PM Axis: perfectly aligned under the left and right edges */}
+      <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-700 mt-1 px-0.5 font-sans">
+        <span>9 AM</span>
+        <span>5 PM</span>
+      </div>
+
+      {/* Color Legend */}
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] mt-1.5 px-0.5 font-sans">
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+          <span className="text-zinc-600 font-medium">Available</span>
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+          <span className="text-zinc-600 font-medium">Faculty on Leave</span>
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+          <span className="text-blue-800 font-semibold">Class Exchange</span>
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-purple-600 shrink-0" />
+          <span className="text-purple-800 font-semibold">Rescheduled</span>
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0" />
+          <span className="text-zinc-600 font-medium">Occupied</span>
+        </span>
       </div>
     </div>
   );
