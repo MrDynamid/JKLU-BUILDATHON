@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  Layers, 
-  CheckCircle2, 
-  ArrowLeftRight, 
+import {
+  Calendar,
+  Clock,
+  User,
+  Layers,
+  CheckCircle2,
+  ArrowLeftRight,
   RotateCcw,
   Download,
   FileSpreadsheet,
@@ -75,8 +75,8 @@ export function TimetableView({
       const assigned = selectedFaculty.assignedSlots || {};
 
       DAYS_OF_WEEK.forEach(day => {
-        const daySlots = Array.isArray(assigned) 
-          ? assigned 
+        const daySlots = Array.isArray(assigned)
+          ? assigned
           : (assigned[day] || []);
 
         daySlots.forEach(s => {
@@ -276,8 +276,8 @@ export function TimetableView({
               </thead>
               <tbody class="divide-y divide-slate-100 font-sans">
                 ${TIME_SLOTS.map(slot => {
-                  if (slot.id === '12:00') {
-                    return `
+      if (slot.id === '12:00') {
+        return `
                       <tr class="bg-amber-50/70 border-y border-amber-200">
                         <td class="py-2.5 px-2 text-center font-bold text-amber-900 bg-amber-100/70 border-r border-amber-200 mono text-[11px]">
                           12 PM
@@ -290,20 +290,20 @@ export function TimetableView({
                         </td>
                       </tr>
                     `;
-                  }
-                  return `
+      }
+      return `
                   <tr class="hover:bg-slate-50/50">
                     <td class="py-3 px-2 text-center font-bold text-slate-600 bg-slate-50/50 border-r border-slate-200 mono text-[11px]">
                       ${slot.label}
                       <div class="text-[9px] text-slate-400 font-normal">${slot.range.split(' ')[0]}</div>
                     </td>
                     ${DAYS_OF_WEEK.map(day => {
-                      const itemVal = timetableMatrix[day]?.[slot.id];
-                      if (!itemVal) {
-                        return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">—</td>`;
-                      }
-                      const items = Array.isArray(itemVal) ? itemVal : [itemVal];
-                      return `
+        const itemVal = timetableMatrix[day]?.[slot.id];
+        if (!itemVal) {
+          return `<td class="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-center text-slate-300 text-[11px]">—</td>`;
+        }
+        const items = Array.isArray(itemVal) ? itemVal : [itemVal];
+        return `
                         <td class="py-2 px-2.5 border-r border-slate-100 last:border-r-0">
                           ${items.map(item => `
                             <div class="p-1.5 rounded-lg bg-blue-50/70 border border-blue-200/60 mb-1 last:mb-0">
@@ -316,10 +316,10 @@ export function TimetableView({
                           `).join('')}
                         </td>
                       `;
-                    }).join('')}
+      }).join('')}
                   </tr>
                 `;
-                }).join('')}
+    }).join('')}
               </tbody>
             </table>
           </div>
@@ -355,7 +355,7 @@ export function TimetableView({
     }
 
     return (
-      <div 
+      <div
         key={item.roomId + item.course}
         onClick={() => onOpenExchangeModal && onOpenExchangeModal(item)}
         title="Click to reschedule or exchange this class"
@@ -507,7 +507,7 @@ export function TimetableView({
             </button>
 
             {isExportOpen && (
-              <div 
+              <div
                 className="absolute right-0 mt-1.5 w-60 bg-white rounded-xl shadow-xl border border-zinc-200 py-1.5 z-50 text-xs animate-in fade-in duration-100"
                 onClick={() => setIsExportOpen(false)}
               >

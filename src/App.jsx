@@ -118,7 +118,7 @@ export function App() {
   // Active timetable for the currently selected day, with approved bookings dynamically applied
   const currentDayTimetable = useMemo(() => {
     const base = weeklyTimetableState[selectedDay] || weeklyTimetableState['Monday'] || INITIAL_WEEKLY_TIMETABLES.Monday;
-    
+
     // Find all approved bookings that apply to this day (or permanent)
     const approvedDayBookings = bookings.filter(
       (b) => b.status === 'approved' && (b.day === selectedDay || b.isPermanent)
@@ -131,8 +131,8 @@ export function App() {
     approvedDayBookings.forEach((b) => {
       const room = b.roomId || b.roomName;
       if (!room) return;
-      const startHourStr = b.startTime || 
-        (b.timeSlot?.includes(':') ? b.timeSlot.match(/\d{2}:\d{2}/)?.[0] : b.timeSlot) || 
+      const startHourStr = b.startTime ||
+        (b.timeSlot?.includes(':') ? b.timeSlot.match(/\d{2}:\d{2}/)?.[0] : b.timeSlot) ||
         '11:00';
       const startIdx = TIME_SLOTS.findIndex(s => s.id === startHourStr);
       const duration = b.duration || 1;
@@ -837,7 +837,7 @@ export function App() {
     if (!targetBooking) return;
 
     const bookingDay = targetBooking.day || selectedDay;
-    const startHourStr = targetBooking.startTime || 
+    const startHourStr = targetBooking.startTime ||
       (targetBooking.timeSlot?.includes(':') ? targetBooking.timeSlot.match(/\d{2}:\d{2}/)?.[0] : targetBooking.timeSlot) ||
       '11:00';
     const startIdx = TIME_SLOTS.findIndex(s => s.id === startHourStr);
