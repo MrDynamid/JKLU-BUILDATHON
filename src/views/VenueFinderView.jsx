@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Sparkles, RotateCcw, Filter, Calendar, Clock } from 'lucide-react';
 import { TIME_SLOTS, FIRST_SEM_BATCHES, DAYS_OF_WEEK } from '../data/campusData';
 import { VenueCard } from '../components/VenueCard';
+import { CustomSelect } from '../components/CustomSelect';
 
 export function VenueFinderView({
   searchQuery,
@@ -30,7 +31,7 @@ export function VenueFinderView({
     <div className="flex-1 overflow-y-auto p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-4 font-sans">
       {/* Top Section — Hybrid Search & Filter Bar */}
       <div className="space-y-3 bg-white p-4 rounded-2xl border border-zinc-200/90 shadow-2xs">
-        {/* Natural Language AI Search Bar */}
+        {/* Natural Language Smart Search Bar */}
         <form onSubmit={onSearchSubmit} className="relative flex items-center gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -38,7 +39,7 @@ export function VenueFinderView({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder='Try AI prompt: "Find a room for 60 students from 11 AM with a Smart Board on Tuesday"'
+              placeholder='Search venues, capacity or equipment (e.g., "Room for 60 students from 11 AM with Smart Board")'
               className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-xl border border-zinc-200 focus:border-zinc-900 focus:outline-hidden bg-zinc-50/50 hover:bg-white focus:bg-white placeholder-zinc-400 transition-all font-sans"
             />
           </div>
@@ -47,100 +48,94 @@ export function VenueFinderView({
             disabled={isProcessing}
             className="px-4 py-2.5 rounded-xl text-xs font-bold bg-zinc-900 text-white hover:bg-zinc-800 transition-colors flex items-center gap-2 shrink-0 cursor-pointer shadow-xs"
           >
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Ask Agent</span>
+            <Search className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Smart Search</span>
           </button>
         </form>
 
         {/* Quick Filter Pills / Dropdowns in a single responsive row */}
         <div className="flex flex-wrap items-center gap-2 text-xs pt-1 border-t border-zinc-100">
           {/* Active Day Selector */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200">
-            <Calendar className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="text-zinc-400 font-medium">Day:</span>
-            <select
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-400 font-medium text-[11px]">Day:</span>
+            <CustomSelect
               value={selectedDay}
-              onChange={(e) => setSelectedDay(e.target.value)}
-              className="bg-transparent font-semibold text-zinc-900 focus:outline-hidden cursor-pointer font-sans"
-            >
-              {DAYS_OF_WEEK.map(day => (
-                <option key={day} value={day}>{day}</option>
-              ))}
-            </select>
+              onChange={setSelectedDay}
+              options={DAYS_OF_WEEK.map(day => ({ value: day, label: day }))}
+              icon={Calendar}
+              buttonClassName="bg-zinc-50 border-zinc-200 py-1 font-semibold"
+            />
           </div>
 
           {/* Start Time */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200">
-            <Clock className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="text-zinc-400 font-medium">Time:</span>
-            <select
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-400 font-medium text-[11px]">Time:</span>
+            <CustomSelect
               value={selectedTime}
-              onChange={(e) => setSelectedTime(e.target.value)}
-              className="bg-transparent font-semibold text-zinc-900 focus:outline-hidden cursor-pointer font-sans"
-            >
-              {TIME_SLOTS.map(slot => (
-                <option key={slot.id} value={slot.id}>{slot.label} ({slot.range})</option>
-              ))}
-            </select>
+              onChange={setSelectedTime}
+              options={TIME_SLOTS.map(slot => ({ value: slot.id, label: `${slot.label} (${slot.range})` }))}
+              icon={Clock}
+              buttonClassName="bg-zinc-50 border-zinc-200 py-1 font-semibold"
+            />
           </div>
 
           {/* Minimum Capacity */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200">
-            <span className="text-zinc-400 font-medium">Capacity:</span>
-            <select
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-400 font-medium text-[11px]">Capacity:</span>
+            <CustomSelect
               value={minCapacity}
-              onChange={(e) => setMinCapacity(e.target.value)}
-              className="bg-transparent font-semibold text-zinc-900 focus:outline-hidden cursor-pointer font-sans"
-            >
-              <option value="all">All Capacities</option>
-              <option value="30">30+ Seats</option>
-              <option value="60">60+ Seats (Classrooms)</option>
-              <option value="70">70+ Seats (Labs)</option>
-              <option value="200">200 Seats (Amphitheatre)</option>
-            </select>
+              onChange={setMinCapacity}
+              options={[
+                { value: 'all', label: 'All Capacities' },
+                { value: '30', label: '30+ Seats' },
+                { value: '60', label: '60+ Seats (Classrooms)' },
+                { value: '70', label: '70+ Seats (Labs)' },
+                { value: '200', label: '200 Seats (Amphitheatre)' }
+              ]}
+              buttonClassName="bg-zinc-50 border-zinc-200 py-1 font-semibold"
+            />
           </div>
 
           {/* Display Tech */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200">
-            <span className="text-zinc-400 font-medium">Display:</span>
-            <select
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-400 font-medium text-[11px]">Display:</span>
+            <CustomSelect
               value={displayTech}
-              onChange={(e) => setDisplayTech(e.target.value)}
-              className="bg-transparent font-semibold text-zinc-900 focus:outline-hidden cursor-pointer font-sans"
-            >
-              <option value="all">All Displays</option>
-              <option value="Smart Board">Smart Board</option>
-              <option value="Projector">Projector</option>
-            </select>
+              onChange={setDisplayTech}
+              options={[
+                { value: 'all', label: 'All Displays' },
+                { value: 'Smart Board', label: 'Smart Board' },
+                { value: 'Projector', label: 'Projector' }
+              ]}
+              buttonClassName="bg-zinc-50 border-zinc-200 py-1 font-semibold"
+            />
           </div>
 
           {/* Power Sockets / Room Type */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200">
-            <span className="text-zinc-400 font-medium">Type:</span>
-            <select
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-400 font-medium text-[11px]">Type:</span>
+            <CustomSelect
               value={powerFilter}
-              onChange={(e) => setPowerFilter(e.target.value)}
-              className="bg-transparent font-semibold text-zinc-900 focus:outline-hidden cursor-pointer font-sans"
-            >
-              <option value="all">All Venue Types</option>
-              <option value="Medium">Medium (Classrooms)</option>
-              <option value="High (Every Seat)">High + PCs (Labs)</option>
-              <option value="None / Low">200 Seating (Amphitheatre)</option>
-            </select>
+              onChange={setPowerFilter}
+              options={[
+                { value: 'all', label: 'All Venue Types' },
+                { value: 'Medium', label: 'Medium (Classrooms)' },
+                { value: 'High (Every Seat)', label: 'High + PCs (Labs)' },
+                { value: 'None / Low', label: '200 Seating (Amphitheatre)' }
+              ]}
+              buttonClassName="bg-zinc-50 border-zinc-200 py-1 font-semibold"
+            />
           </div>
 
           {/* Target Batch (For Zero Walking Delay) */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200">
-            <span className="text-zinc-400 font-medium">Batch (0-Walk):</span>
-            <select
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-400 font-medium text-[11px]">Batch:</span>
+            <CustomSelect
               value={targetBatch}
-              onChange={(e) => setTargetBatch(e.target.value)}
-              className="bg-transparent font-semibold text-emerald-800 focus:outline-hidden cursor-pointer font-sans"
-            >
-              {FIRST_SEM_BATCHES.map(b => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
+              onChange={setTargetBatch}
+              options={FIRST_SEM_BATCHES.map(b => ({ value: b, label: b }))}
+              buttonClassName="bg-zinc-50 border-zinc-200 py-1 text-emerald-800 font-bold"
+            />
           </div>
 
           <button

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { X, CheckCircle2, AlertTriangle, Clock, Calendar, Users, Building, ShieldAlert } from 'lucide-react';
 import { TIME_SLOTS } from '../data/campusData';
+import { CustomSelect } from './CustomSelect';
 
 export function BookingModal({
   isOpen,
@@ -10,16 +11,24 @@ export function BookingModal({
   targetBatch,
   onSubmitBooking,
   roomSchedule = {},
-  facultyList = []
+  facultyList = [],
+  selectedDay = 'Monday',
+  weeklyTimetableState = {},
+  allVenues = [],
+  onSwitchVenue
 }) {
   const dialogRef = useRef(null);
   const [purpose, setPurpose] = useState('Extra Lecture / Tutorial');
   const [customNote, setCustomNote] = useState('');
   const [startTime, setStartTime] = useState(defaultStartTime || '11:00');
   const [duration, setDuration] = useState('1');
-  const [batchName, setBatchName] = useState(targetBatch || 'Sem 1 - Sec J');
+  const [batchName, setBatchName] = useState('Sec A');
+  const [selectedSections, setSelectedSections] = useState(['Sec A']);
   const [attendees, setAttendees] = useState(venue?.capacity || 60);
   const [organizerName, setOrganizerName] = useState('Prof. A. Kumar (Dept. of CSE)');
+  const [isPermanent, setIsPermanent] = useState(false);
+
+  const AVAILABLE_SECTIONS = ['Sec A', 'Sec B', 'Sec C', 'Sec D', 'Sec E', 'Sec F', 'Sec G', 'Sec H', 'Sec I', 'Sec J'];
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -37,16 +46,25 @@ export function BookingModal({
   }, [isOpen]);
 
   useEffect(() => {
-    if (venue) {
-      setAttendees(venue.capacity || 60);
+    if (!isOpen) return;
+
+    // Synchronize section and attendee count on open
+    let initialSec = 'Sec A';
+    if (targetBatch && targetBatch !== 'General' && targetBatch !== 'None / General Workshop') {
+      const match = targetBatch.match(/Sec\s+[A-J]/i);
+      initialSec = match ? match[0] : targetBatch;
+    } else if (venue?.homeSection && venue.homeSection.startsWith('Sec ')) {
+      initialSec = venue.homeSection;
     }
+
+    setSelectedSections([initialSec]);
+    setBatchName(initialSec);
+    setAttendees(60);
+
     if (defaultStartTime) {
       setStartTime(defaultStartTime);
     }
-    if (targetBatch && targetBatch !== 'None / General Workshop') {
-      setBatchName(targetBatch);
-    }
-  }, [venue, defaultStartTime, targetBatch]);
+  }, [isOpen, venue, defaultStartTime, targetBatch]);
 
   // Helper to get slot status
   const getSlotStatus = (slotId) => {
@@ -73,12 +91,40 @@ export function BookingModal({
     };
   };
 
+  const handleToggleSection = (sec) => {
+    setSelectedSections(prev => {
+      let next;
+      if (prev.includes(sec)) {
+        next = prev.filter(s => s !== sec);
+        if (next.length === 0) next = [sec];
+      } else {
+        next = [...prev, sec];
+      }
+      setBatchName(next.join(' + '));
+      setAttendees(next.length * 60);
+      return next;
+    });
+  };
+
   // Evaluate the selected booking window for conflicts
   const windowEvaluation = useMemo(() => {
     const startIdx = TIME_SLOTS.findIndex(s => s.id === startTime);
     const durationNum = parseInt(duration, 10);
     const checkedSlots = [];
     const conflicts = [];
+
+    // Capacity check
+    const isOverCapacity = attendees > (venue?.capacity || 60);
+    if (isOverCapacity) {
+      conflicts.push({
+        slot: { label: 'Room Capacity' },
+        status: { 
+          label: `Headcount (${attendees} students) exceeds venue capacity (${venue?.capacity} seats). Merge requires high-capacity venue like IET Amphitheatre (200 seats).` 
+        }
+      });
+    }
+
+    const dayTimetable = weeklyTimetableState[selectedDay] || {};
 
     for (let i = 0; i < durationNum; i++) {
       const currentSlot = TIME_SLOTS[startIdx + i];
@@ -88,6 +134,23 @@ export function BookingModal({
         if (!status.isFree) {
           conflicts.push({ slot: currentSlot, status });
         }
+
+        // Dual-Schedule Sync: check if any of the selected sections already have a class in another room
+        selectedSections.forEach(sec => {
+          Object.entries(dayTimetable).forEach(([rId, sched]) => {
+            const roomSlot = sched[currentSlot.id];
+            if (roomSlot && roomSlot.status === 'occupied' && roomSlot.batch) {
+              if (roomSlot.batch.includes(sec) && rId !== venue?.id) {
+                conflicts.push({
+                  slot: currentSlot,
+                  status: {
+                    label: `Section Clash: ${sec} already has "${roomSlot.title || 'Class'}" in ${rId}`
+                  }
+                });
+              }
+            }
+          });
+        });
       } else {
         conflicts.push({ 
           slot: { label: 'After 5 PM' }, 
@@ -101,7 +164,7 @@ export function BookingModal({
       conflicts,
       checkedSlots
     };
-  }, [startTime, duration, roomSchedule, facultyList, venue]);
+  }, [startTime, duration, roomSchedule, facultyList, venue, attendees, selectedSections, selectedDay, weeklyTimetableState]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -123,6 +186,7 @@ export function BookingModal({
       id: `req-${Date.now().toString().slice(-4)}`,
       roomId: venue.id,
       roomName: venue.name,
+      day: selectedDay,
       timeSlot: timeSlotLabel,
       startTime,
       duration: durationNum,
@@ -131,7 +195,10 @@ export function BookingModal({
       requestedAt: 'Just now',
       batch: batchName,
       capacity: attendees,
-      status: 'pending'
+      status: 'pending',
+      isPermanent,
+      isMergedSections: selectedSections.length > 1,
+      mergedSections: selectedSections
     });
 
     onClose();
@@ -204,7 +271,7 @@ export function BookingModal({
                 >
                   <div className="text-[10px] leading-tight">{slot.label}</div>
                   <div className="text-[9px] font-medium truncate mt-0.5">
-                    {status.isFree ? (status.isUnlocked ? 'On Leave' : 'Available') : 'Occupied'}
+                    {slot.id === '12:00' ? 'Lunch' : (status.isFree ? (status.isUnlocked ? 'Faculty on Leave' : 'Available') : 'Occupied')}
                   </div>
                 </button>
               );
@@ -248,12 +315,10 @@ export function BookingModal({
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Start Time
               </label>
-              <select
+              <CustomSelect
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-200 bg-white font-medium focus:border-zinc-900 focus:outline-hidden"
-              >
-                {TIME_SLOTS.map((s) => {
+                onChange={setStartTime}
+                options={TIME_SLOTS.map((s) => {
                   const status = getSlotStatus(s.id);
                   let statusDescription = 'Available';
                   if (!status.isFree) {
@@ -261,30 +326,33 @@ export function BookingModal({
                   } else if (status.isUnlocked) {
                     statusDescription = 'Faculty on Leave (Available)';
                   }
-
-                  return (
-                    <option key={s.id} value={s.id}>
-                      {s.label} ({statusDescription})
-                    </option>
-                  );
+                  return {
+                    value: s.id,
+                    label: `${s.label} (${s.id === '12:00' ? 'Lunch' : statusDescription})`,
+                    badge: status.isUnlocked ? 'Freed' : (!status.isFree ? 'Occupied' : null)
+                  };
                 })}
-              </select>
+                className="w-full"
+                buttonClassName="py-2"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Duration
               </label>
-              <select
+              <CustomSelect
                 value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-200 bg-white font-medium focus:border-zinc-900 focus:outline-hidden"
-              >
-                <option value="1">1 Hour</option>
-                <option value="2">2 Hours</option>
-                <option value="3">3 Hours</option>
-                <option value="4">4 Hours</option>
-              </select>
+                onChange={setDuration}
+                options={[
+                  { value: '1', label: '1 Hour' },
+                  { value: '2', label: '2 Hours' },
+                  { value: '3', label: '3 Hours' },
+                  { value: '4', label: '4 Hours' }
+                ]}
+                className="w-full"
+                buttonClassName="py-2"
+              />
             </div>
           </div>
 
@@ -292,17 +360,19 @@ export function BookingModal({
             <label className="block text-xs font-semibold text-zinc-700 mb-1">
               Purpose
             </label>
-            <select
+            <CustomSelect
               value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-200 bg-white font-medium focus:border-zinc-900 focus:outline-hidden"
-            >
-              <option value="Extra Lecture / Remedial Class">Extra Lecture / Remedial Class</option>
-              <option value="Technical Workshop / Bootcamp">Technical Workshop / Bootcamp</option>
-              <option value="Hackathon Mentorship & Sprint">Hackathon Mentorship & Sprint</option>
-              <option value="Guest Lecture & Industry Talk">Guest Lecture & Industry Talk</option>
-              <option value="Student Society / Club Meeting">Student Society / Club Meeting</option>
-            </select>
+              onChange={setPurpose}
+              options={[
+                { value: 'Extra Lecture / Remedial Class', label: 'Extra Lecture / Remedial Class' },
+                { value: 'Technical Workshop / Bootcamp', label: 'Technical Workshop / Bootcamp' },
+                { value: 'Hackathon Mentorship & Sprint', label: 'Hackathon Mentorship & Sprint' },
+                { value: 'Guest Lecture & Industry Talk', label: 'Guest Lecture & Industry Talk' },
+                { value: 'Student Society / Club Meeting', label: 'Student Society / Club Meeting' }
+              ]}
+              className="w-full"
+              buttonClassName="py-2 font-medium"
+            />
           </div>
 
           <div>
@@ -318,15 +388,117 @@ export function BookingModal({
             />
           </div>
 
+          {/* Scope Toggle: One-Time vs Permanent Master Timetable */}
+          <div className="p-3 rounded-xl border border-zinc-200 bg-zinc-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div>
+              <span className="font-bold text-zinc-900 block font-sans">
+                Booking Schedule Scope
+              </span>
+              <span className="text-zinc-500 text-[11px]">
+                One-time session override vs recurring semester master timetable commit.
+              </span>
+            </div>
+            <div className="inline-flex rounded-lg border border-zinc-200 bg-white p-0.5 shadow-2xs shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsPermanent(false)}
+                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                  !isPermanent ? 'bg-zinc-900 text-white shadow-2xs' : 'text-zinc-600 hover:text-zinc-900'
+                }`}
+              >
+                Today Only
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsPermanent(true)}
+                className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                  isPermanent ? 'bg-indigo-600 text-white shadow-2xs' : 'text-indigo-700 hover:text-indigo-900'
+                }`}
+              >
+                Permanent Master
+              </button>
+            </div>
+          </div>
+
+          {/* Combined Multi-Section Lecture Mode (2+ Sections Merged) */}
+          <div className="p-3 rounded-xl border border-zinc-200 bg-white space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <label className="font-bold text-zinc-800 flex items-center gap-1.5 font-sans">
+                <Users className="w-3.5 h-3.5 text-blue-600" />
+                <span>Section Selector (Merge Sections)</span>
+              </label>
+              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                selectedSections.length > 1 
+                  ? 'bg-purple-100 text-purple-900 border border-purple-200' 
+                  : 'bg-zinc-100 text-zinc-700'
+              }`}>
+                {selectedSections.length > 1 ? `${selectedSections.length} Sections Merged (${attendees} Seats)` : 'Single Section (60 Seats)'}
+              </span>
+            </div>
+
+            {/* Quick-toggle section pills */}
+            <div className="flex flex-wrap gap-1.5">
+              {AVAILABLE_SECTIONS.map(sec => {
+                const isSelected = selectedSections.includes(sec);
+                return (
+                  <button
+                    key={sec}
+                    type="button"
+                    onClick={() => handleToggleSection(sec)}
+                    className={`px-2.5 py-1 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                        : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:border-zinc-300'
+                    }`}
+                  >
+                    {sec}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Capacity scaling indicator & High-Capacity venue recommendation */}
+            {attendees > (venue?.capacity || 60) ? (
+              <div className="mt-2 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <div className="font-bold text-amber-950 flex items-center gap-1">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Capacity Warning: {attendees} attendees exceed {venue?.id} ({venue?.capacity} seats)</span>
+                  </div>
+                  <div className="text-[11px] text-amber-800 mt-0.5">
+                    Merged sections require high-capacity venue (e.g. 200-seater IET Amphitheatre).
+                  </div>
+                </div>
+                {onSwitchVenue && (
+                  <button
+                    type="button"
+                    onClick={() => onSwitchVenue('IET-AMP')}
+                    className="px-2.5 py-1 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-md shadow-2xs transition-colors shrink-0 cursor-pointer"
+                  >
+                    Switch to IET-AMP (200 Seats)
+                  </button>
+                )}
+              </div>
+            ) : selectedSections.length > 1 ? (
+              <div className="mt-1.5 p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-900 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>
+                  <strong>Capacity Fit:</strong> {venue?.name} ({venue?.capacity} seats) accommodates merged headcount ({attendees} students).
+                </span>
+              </div>
+            ) : null}
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                Target Batch
+                Target Section(s)
               </label>
               <input
                 type="text"
                 value={batchName}
                 onChange={(e) => setBatchName(e.target.value)}
+                placeholder="e.g. Sec A or Sec A + Sec B"
                 className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-200 focus:border-zinc-900 focus:outline-hidden"
               />
             </div>
@@ -340,7 +512,7 @@ export function BookingModal({
                 min="1"
                 max={venue?.capacity || 200}
                 value={attendees}
-                onChange={(e) => setAttendees(e.target.value)}
+                onChange={(e) => setAttendees(parseInt(e.target.value, 10) || 60)}
                 className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-200 focus:border-zinc-900 focus:outline-hidden"
               />
             </div>

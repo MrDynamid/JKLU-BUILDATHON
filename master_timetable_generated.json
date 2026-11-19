@@ -1,0 +1,985 @@
+{
+  "status": "success",
+  "solver": "Google OR-Tools CP-SAT",
+  "total_assigned": 56,
+  "zero_walk_percentage": 76.8,
+  "lunch_protected": true,
+  "schedule": {
+    "Monday": {
+      "EB1-101": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec D",
+          "is_lab": false
+        },
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-102": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec J",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec D",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-104": {
+        "09:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec E",
+          "is_lab": false
+        },
+        "10:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec F",
+          "is_lab": false
+        },
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec E",
+          "is_lab": false
+        }
+      },
+      "EB2-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-201": {
+        "09:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec J",
+          "is_lab": false
+        },
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec H",
+          "is_lab": false
+        },
+        "16:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec J",
+          "is_lab": false
+        }
+      },
+      "EB2-202": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec I",
+          "is_lab": false
+        },
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-204": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec A",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-205": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "CS1140-L",
+          "title": "Hardware Lab",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec H",
+          "is_lab": true
+        },
+        "14:00": null,
+        "15:00": null,
+        "16:00": {
+          "code": "CS1140-L",
+          "title": "Hardware Lab",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec G",
+          "is_lab": true
+        }
+      },
+      "TB-106": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-103": {
+        "09:00": null,
+        "10:00": {
+          "code": "EE1118-L",
+          "title": "EE Lab",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec C",
+          "is_lab": true
+        },
+        "11:00": {
+          "code": "CS1139-L",
+          "title": "Programming Lab",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec A",
+          "is_lab": true
+        },
+        "13:00": null,
+        "14:00": null,
+        "15:00": {
+          "code": "EE1118-L",
+          "title": "EE Lab",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec A",
+          "is_lab": true
+        },
+        "16:00": null
+      },
+      "IET-AMP": {
+        "09:00": {
+          "code": "CS1139-L",
+          "title": "Programming Lab",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec I",
+          "is_lab": true
+        },
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      }
+    },
+    "Tuesday": {
+      "EB1-101": {
+        "09:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec A",
+          "is_lab": false
+        },
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec C",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-102": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec E",
+          "is_lab": false
+        },
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-201": {
+        "09:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec J",
+          "is_lab": false
+        },
+        "10:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec I",
+          "is_lab": false
+        },
+        "11:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec J",
+          "is_lab": false
+        },
+        "13:00": null,
+        "14:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec H",
+          "is_lab": false
+        },
+        "15:00": null,
+        "16:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec G",
+          "is_lab": false
+        }
+      },
+      "EB2-202": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec I",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec G",
+          "is_lab": false
+        },
+        "16:00": null
+      },
+      "EB2-204": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-205": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec B",
+          "is_lab": false
+        },
+        "14:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec I",
+          "is_lab": false
+        },
+        "15:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec J",
+          "is_lab": false
+        },
+        "16:00": null
+      },
+      "TB-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-106": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-103": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": {
+          "code": "CS1139-L",
+          "title": "Programming Lab",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec I",
+          "is_lab": true
+        },
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": {
+          "code": "EE1118-L",
+          "title": "EE Lab",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec A",
+          "is_lab": true
+        }
+      },
+      "IET-AMP": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      }
+    },
+    "Wednesday": {
+      "EB1-101": {
+        "09:00": null,
+        "10:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec A",
+          "is_lab": false
+        },
+        "11:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec B",
+          "is_lab": false
+        },
+        "13:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec A",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec A",
+          "is_lab": false
+        },
+        "16:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec C",
+          "is_lab": false
+        }
+      },
+      "EB1-102": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-201": {
+        "09:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec H",
+          "is_lab": false
+        },
+        "10:00": null,
+        "11:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec I",
+          "is_lab": false
+        },
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-202": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-204": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-205": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": {
+          "code": "CS1140-L",
+          "title": "Hardware Lab",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec H",
+          "is_lab": true
+        },
+        "13:00": null,
+        "14:00": {
+          "code": "CS1139-L",
+          "title": "Programming Lab",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec A",
+          "is_lab": true
+        },
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-106": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-103": {
+        "09:00": {
+          "code": "CS1139-L",
+          "title": "Programming Lab",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec B",
+          "is_lab": true
+        },
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "IET-AMP": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec B",
+          "is_lab": false
+        }
+      }
+    },
+    "Thursday": {
+      "EB1-101": {
+        "09:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec B",
+          "is_lab": false
+        },
+        "10:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec A",
+          "is_lab": false
+        },
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-102": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": {
+          "code": "EE1118",
+          "title": "EE Engineering",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec C",
+          "is_lab": false
+        },
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec D",
+          "is_lab": false
+        }
+      },
+      "EB1-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-201": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-202": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-204": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-205": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-106": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-103": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": {
+          "code": "CS1139-L",
+          "title": "Programming Lab",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec B",
+          "is_lab": true
+        },
+        "14:00": null,
+        "15:00": {
+          "code": "CS1140-L",
+          "title": "Hardware Lab",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec G",
+          "is_lab": true
+        },
+        "16:00": null
+      },
+      "IET-AMP": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      }
+    },
+    "Friday": {
+      "EB1-101": {
+        "09:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec B",
+          "is_lab": false
+        },
+        "10:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec B",
+          "is_lab": false
+        },
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-102": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-104": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-201": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": {
+          "code": "CS1139",
+          "title": "Programming-1",
+          "teacher": "Dr. Amar Nath Patra",
+          "section": "Sec I",
+          "is_lab": false
+        }
+      },
+      "EB2-202": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec F",
+          "is_lab": false
+        },
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-204": {
+        "09:00": null,
+        "10:00": {
+          "code": "CS1140",
+          "title": "Data Structures",
+          "teacher": "Dr. Neeraj Kumar",
+          "section": "Sec G",
+          "is_lab": false
+        },
+        "11:00": null,
+        "13:00": {
+          "code": "MA1101",
+          "title": "Applied Math",
+          "teacher": "Prof. Devendra Bhavsar",
+          "section": "Sec F",
+          "is_lab": false
+        },
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB2-205": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-105": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "TB-106": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      },
+      "EB1-103": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": {
+          "code": "EE1118-L",
+          "title": "EE Lab",
+          "teacher": "Dr. Rashmi Kushwaha",
+          "section": "Sec C",
+          "is_lab": true
+        },
+        "16:00": null
+      },
+      "IET-AMP": {
+        "09:00": null,
+        "10:00": null,
+        "11:00": null,
+        "13:00": null,
+        "14:00": null,
+        "15:00": null,
+        "16:00": null
+      }
+    }
+  }
+}

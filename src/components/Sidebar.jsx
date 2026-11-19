@@ -2,23 +2,19 @@ import React from 'react';
 import { 
   Search, 
   UserX, 
-  ShieldCheck, 
-  Sparkles, 
-  Cpu, 
-  GraduationCap, 
-  Monitor, 
-  Zap
+  ShieldCheck,
+  Calendar
 } from 'lucide-react';
 
 export function Sidebar({
   activeTab,
   setActiveTab,
-  onApplyPreset,
   facultyOnLeaveCount,
   pendingBookingsCount,
   freeVenuesCount,
   totalVenuesCount,
-  unlockedSlotsCount
+  unlockedSlotsCount,
+  onOpenTimetable
 }) {
   const navItems = [
     {
@@ -35,34 +31,18 @@ export function Sidebar({
       badgeColor: 'bg-amber-100 text-amber-900 border-amber-200'
     },
     {
+      id: 'timetable',
+      label: 'Campus Timetable',
+      icon: Calendar,
+      badge: 'Interactive',
+      badgeColor: 'bg-blue-50 text-blue-800 border-blue-200'
+    },
+    {
       id: 'admin',
       label: 'Admin Gate',
       icon: ShieldCheck,
       badge: pendingBookingsCount > 0 ? pendingBookingsCount : null,
       badgeColor: 'bg-zinc-100 text-zinc-800 border-zinc-200'
-    }
-  ];
-
-  const presets = [
-    {
-      label: 'Sec A (EB1-101)',
-      icon: Zap,
-      action: () => onApplyPreset({ batch: 'Sec A (EB1-101)', startTime: '11:00' })
-    },
-    {
-      label: 'Sec J (EB2-202)',
-      icon: Zap,
-      action: () => onApplyPreset({ batch: 'Sec J (EB2-202)', startTime: '11:00' })
-    },
-    {
-      label: 'Programming Lab (TB-106)',
-      icon: Cpu,
-      action: () => onApplyPreset({ capacity: 70, powerSockets: 'High (Every Seat)' })
-    },
-    {
-      label: 'Amphitheatre (200 Cap)',
-      icon: GraduationCap,
-      action: () => onApplyPreset({ capacity: 200, powerSockets: 'None / Low' })
     }
   ];
 
@@ -77,7 +57,9 @@ export function Sidebar({
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                }}
                 className={`w-full text-left px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center justify-between cursor-pointer ${
                   isActive
                     ? 'bg-zinc-100 text-zinc-900 font-semibold'
@@ -99,28 +81,6 @@ export function Sidebar({
         </nav>
       </div>
 
-      {/* Quick Sem 1 Scenarios */}
-      <div className="p-2.5 border-b border-zinc-100">
-        <div className="text-[10px] font-mono tracking-wider text-zinc-400 uppercase font-semibold px-2 mb-1">
-          Quick Filters
-        </div>
-        <div className="space-y-0.5">
-          {presets.map((preset, idx) => {
-            const Icon = preset.icon;
-            return (
-              <button
-                key={idx}
-                onClick={preset.action}
-                className="w-full text-left px-2 py-1.5 rounded-md hover:bg-zinc-50 transition-colors text-xs text-zinc-700 hover:text-zinc-900 flex items-center gap-2 cursor-pointer"
-              >
-                <Icon className="w-3 h-3 text-zinc-400" />
-                <span className="truncate">{preset.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Status Footer */}
       <div className="mt-auto p-3 bg-zinc-50/70 border-t border-zinc-200/70 text-xs">
         <div className="flex items-center justify-between text-zinc-500 py-0.5">
@@ -135,3 +95,5 @@ export function Sidebar({
     </aside>
   );
 }
+
+export default Sidebar;

@@ -14,21 +14,53 @@ import {
   calculateContinuousFreeHours,
   calculateWalkingDelay,
   checkUnlockedViaLeave,
-  parseNaturalLanguageQuery
+  parseNaturalLanguageQuery,
+  findOptimalRescheduleOption
 } from './utils/aiReasoning';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { AiDrawer } from './components/AiDrawer';
 import { BookingModal } from './components/BookingModal';
+import { TimetableView } from './views/TimetableView';
+import { ClassExchangeModal } from './components/ClassExchangeModal';
 import { ToastContainer } from './components/Toast';
+import { LoginPortal } from './components/LoginPortal';
 import { VenueFinderView } from './views/VenueFinderView';
 import { FacultyLeaveView } from './views/FacultyLeaveView';
 import { AdminGateView } from './views/AdminGateView';
 
 export function App() {
+  // Authentication State
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('jklu_auth_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
   // Navigation & Role State
-  const [activeRole, setActiveRole] = useState('professor'); // 'professor' | 'admin'
-  const [activeTab, setActiveTab] = useState('venues'); // 'venues' | 'leave' | 'admin'
+  const [activeRole, setActiveRole] = useState(() => {
+    try {
+      const saved = localStorage.getItem('jklu_auth_user');
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u?.role) return u.role;
+      }
+    } catch (e) { }
+    return 'professor';
+  }); // 'professor' | 'admin'
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const saved = localStorage.getItem('jklu_auth_user');
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u?.role === 'admin') return 'admin';
+      }
+    } catch (e) { }
+    return 'venues';
+  }); // 'venues' | 'leave' | 'admin'
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Active Calendar Day & Time State
@@ -41,8 +73,16 @@ export function App() {
   const [targetBatch, setTargetBatch] = useState('Sec J (EB2-202)');
 
   // Master Data State: Weekly Timetables (Monday through Friday)
+  const TIMETABLE_VERSION = 'v4_unrescheduled_clean';
+
   const [weeklyTimetableState, setWeeklyTimetableState] = useState(() => {
     try {
+      if (localStorage.getItem('jklu_timetable_version') !== TIMETABLE_VERSION) {
+        localStorage.removeItem('jklu_weekly_timetable_official_pdf');
+        localStorage.removeItem('jklu_faculty_official_pdf');
+        localStorage.setItem('jklu_timetable_version', TIMETABLE_VERSION);
+        return INITIAL_WEEKLY_TIMETABLES;
+      }
       const saved = localStorage.getItem('jklu_weekly_timetable_official_pdf');
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -56,6 +96,9 @@ export function App() {
 
   const [facultyList, setFacultyList] = useState(() => {
     try {
+      if (localStorage.getItem('jklu_timetable_version') !== TIMETABLE_VERSION) {
+        return INITIAL_FACULTY;
+      }
       const saved = localStorage.getItem('jklu_faculty_official_pdf');
       return saved ? JSON.parse(saved) : INITIAL_FACULTY;
     } catch (e) {
@@ -80,6 +123,10 @@ export function App() {
   // UI Interactive State
   const [selectedBookingVenue, setSelectedBookingVenue] = useState(null);
   const [bookingDefaultSlot, setBookingDefaultSlot] = useState('11:00');
+  const [timetableInitialFacultyId, setTimetableInitialFacultyId] = useState(null);
+  const [timetableInitialBatch, setTimetableInitialBatch] = useState(null);
+  const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
+  const [exchangeModalInitialSlot, setExchangeModalInitialSlot] = useState(null);
   const [toasts, setToasts] = useState([]);
   const [traces, setTraces] = useState([
     {
@@ -96,13 +143,13 @@ export function App() {
   useEffect(() => {
     try {
       localStorage.setItem('jklu_weekly_timetable_official_pdf', JSON.stringify(weeklyTimetableState));
-    } catch (e) {}
+    } catch (e) { }
   }, [weeklyTimetableState]);
 
   useEffect(() => {
     try {
       localStorage.setItem('jklu_faculty_official_pdf', JSON.stringify(facultyList));
-    } catch (e) {}
+    } catch (e) { }
   }, [facultyList]);
 
   useEffect(() => {
@@ -124,16 +171,312 @@ export function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
+  // Sync tab switch with active role
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    if (tabId === 'admin') {
+      setActiveRole('admin');
+    } else {
+      setActiveRole('professor');
+    }
+  };
+
   // Sync role switch with appropriate view
   const handleRoleChange = (role) => {
     setActiveRole(role);
     if (role === 'admin') {
       setActiveTab('admin');
-      addToast('Switched to Admin Gate', 'Human-in-the-Loop Governance & Campus Overview active.', 'info');
     } else {
-      setActiveTab('venues');
-      addToast('Switched to Professor / Organiser View', 'Venue Finder & Smart Booking Portal active.', 'info');
+      if (activeTab === 'admin') {
+        setActiveTab('venues');
+      }
     }
+  };
+
+  const handleLogin = (userData) => {
+    setCurrentUser(userData);
+    try {
+      localStorage.setItem('jklu_auth_user', JSON.stringify(userData));
+    } catch (e) { }
+    if (userData.role === 'admin') {
+      setActiveRole('admin');
+      setActiveTab('admin');
+    } else {
+      setActiveRole('professor');
+      setActiveTab('venues');
+    }
+    addToast(
+      'Welcome to JKLU Portal',
+      `Signed in as ${userData.displayName} (${userData.roleLabel || userData.role}).`,
+      'success'
+    );
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('jklu_auth_user');
+    } catch (e) { }
+    setCurrentUser(null);
+    addToast('Signed Out', 'You have been safely signed out to the login portal.', 'info');
+  };
+
+  const handleOpenTimetable = (facultyId = null, batch = null) => {
+    if (facultyId) setTimetableInitialFacultyId(facultyId);
+    if (batch) setTimetableInitialBatch(batch);
+    setActiveTab('timetable');
+  };
+
+  const handleResetSchedule = () => {
+    try {
+      localStorage.removeItem('jklu_weekly_timetable_official_pdf');
+      localStorage.removeItem('jklu_faculty_official_pdf');
+      localStorage.setItem('jklu_timetable_version', TIMETABLE_VERSION);
+    } catch (e) { }
+    setWeeklyTimetableState(INITIAL_WEEKLY_TIMETABLES);
+    setFacultyList(INITIAL_FACULTY);
+    addToast(
+      'Schedule Restored',
+      'All classes have been unrescheduled and restored to the official master schedule.',
+      'success'
+    );
+  };
+
+  const handleOpenExchangeModal = (slot = null) => {
+    setExchangeModalInitialSlot(slot);
+    setIsExchangeModalOpen(true);
+  };
+
+  const handleRescheduleSlot = (reschedulePayload) => {
+    const slot = reschedulePayload?.slot || reschedulePayload;
+    if (!slot) return;
+    const originDay = slot.day || selectedDay;
+    const originRoom = slot.roomId;
+    const originTime = slot.time;
+
+    let targetDay = reschedulePayload?.targetDay;
+    let targetTime = reschedulePayload?.targetTime;
+    let targetRoom = reschedulePayload?.targetRoomId;
+    let targetVenueName = targetRoom;
+
+    if (!targetDay || !targetTime || !targetRoom) {
+      // Give options to reschedule when & where instead of 1-click silent swap
+      handleOpenExchangeModal({
+        ...slot,
+        mode: 'reschedule',
+        day: originDay,
+        time: originTime,
+        roomId: originRoom,
+        teacher: slot.teacher,
+        course: slot.course || slot.title,
+        batch: slot.batch
+      });
+      return;
+    } else {
+      const v = VENUES.find(venue => venue.id === targetRoom);
+      if (v) targetVenueName = v.name;
+    }
+
+    // Determine facultyId if missing
+    let targetFacultyId = slot.facultyId;
+    if (!targetFacultyId && slot.teacher) {
+      const matched = facultyList.find(f => f.name === slot.teacher);
+      if (matched) targetFacultyId = matched.id;
+    }
+
+    // 1. Update master weekly timetable
+    const isPermanent = reschedulePayload?.isPermanent || false;
+
+    setWeeklyTimetableState(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      // Free old slot
+      if (updated[originDay]?.[originRoom]?.[originTime]) {
+        updated[originDay][originRoom][originTime] = { status: 'free' };
+      }
+      // Set new slot
+      if (!updated[targetDay]) updated[targetDay] = {};
+      if (!updated[targetDay][targetRoom]) updated[targetDay][targetRoom] = {};
+      updated[targetDay][targetRoom][targetTime] = {
+        status: 'occupied',
+        title: slot.course || slot.title,
+        teacher: slot.teacher || 'Assigned Faculty',
+        facultyId: targetFacultyId,
+        batch: slot.batch || (slot.course?.match(/Sec\s*[A-J]/i)?.[0] || 'General'),
+        isRescheduled: true,
+        isPermanentMasterChange: isPermanent,
+        rescheduledFrom: { roomId: originRoom, time: originTime, day: originDay }
+      };
+      return updated;
+    });
+
+    // 2. Update faculty list assignedSlots
+    if (targetFacultyId) {
+      setFacultyList(prev => prev.map(f => {
+        if (f.id === targetFacultyId || f.name === slot.teacher) {
+          const assigned = JSON.parse(JSON.stringify(f.assignedSlots || {}));
+          if (assigned[originDay]) {
+            assigned[originDay] = assigned[originDay].filter(s => !(s.roomId === originRoom && s.time === originTime));
+          }
+          if (!assigned[targetDay]) assigned[targetDay] = [];
+          assigned[targetDay].push({
+            roomId: targetRoom,
+            time: targetTime,
+            course: slot.course || slot.title,
+            isRescheduled: true,
+            isPermanentMasterChange: isPermanent
+          });
+          return { ...f, assignedSlots: assigned };
+        }
+        return f;
+      }));
+    }
+
+    // 3. Celebratory Toast
+    addToast(
+      isPermanent ? '⚡ Master Timetable Overwritten!' : '⚡ Class Rescheduled Successfully!',
+      `Moved "${slot.course || slot.title}" to ${targetVenueName} at ${targetTime} (${targetDay})${isPermanent ? ' permanently across semester master schedule' : ''} with 0 conflict.`,
+      'success'
+    );
+
+    // 4. Trace Log
+    setTraces(prev => [
+      {
+        id: Date.now().toString(),
+        step: prev.length + 1,
+        tag: isPermanent ? '[MASTER COMMIT]' : '[RESCHEDULE]',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        message: `${isPermanent ? 'Permanent master schedule update: ' : 'Relocated: '}${slot.course || slot.title} (${slot.teacher || 'Faculty'}) from ${originRoom} (${originTime}, ${originDay}) to ${targetRoom} at ${targetTime} (${targetDay}).`
+      },
+      ...prev
+    ]);
+  };
+
+  const handleExchangeClasses = ({ slotA, slotB }) => {
+    if (!slotA || !slotB) return;
+
+    // Enforce mutual section rule
+    const getSec = (s) => {
+      const str = `${s.batch || ''} ${s.course || ''} ${s.title || ''}`;
+      const m = str.match(/Sec\s*([A-J])/i);
+      return m ? `Sec ${m[1].toUpperCase()}` : null;
+    };
+    const secA = getSec(slotA);
+    const secB = getSec(slotB);
+    if (secA && secB && secA !== secB) {
+      addToast(
+        'Mutual Section Rule',
+        `Class exchange restricted: Both classes must belong to the same mutual section (${secA} ≠ ${secB}).`,
+        'error'
+      );
+      return;
+    }
+
+    const dayA = slotA.day;
+    const roomA = slotA.roomId;
+    const timeA = slotA.time;
+
+    const dayB = slotB.day;
+    const roomB = slotB.roomId;
+    const timeB = slotB.time;
+
+    const facultyAId = slotA.facultyId || facultyList.find(f => f.name === slotA.teacher)?.id;
+    const facultyBId = slotB.facultyId || facultyList.find(f => f.name === slotB.teacher)?.id;
+
+    // 1. Update weeklyTimetableState
+    setWeeklyTimetableState(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      const origA = updated[dayA]?.[roomA]?.[timeA] || {};
+      const origB = updated[dayB]?.[roomB]?.[timeB] || {};
+
+      if (!updated[dayA]) updated[dayA] = {};
+      if (!updated[dayA][roomA]) updated[dayA][roomA] = {};
+      if (!updated[dayB]) updated[dayB] = {};
+      if (!updated[dayB][roomB]) updated[dayB][roomB] = {};
+
+      // Swap contents:
+      // At Slot A (Room A, Day A, Time A), put Course B & Teacher B
+      updated[dayA][roomA][timeA] = {
+        ...origB,
+        title: slotB.course || origB.title,
+        teacher: slotB.teacher || origB.teacher,
+        facultyId: facultyBId,
+        batch: slotB.batch || origB.batch || 'General',
+        isExchanged: true,
+        exchangedWith: slotA.teacher,
+        status: 'occupied'
+      };
+
+      // At Slot B (Room B, Day B, Time B), put Course A & Teacher A
+      updated[dayB][roomB][timeB] = {
+        ...origA,
+        title: slotA.course || origA.title,
+        teacher: slotA.teacher || origA.teacher,
+        facultyId: facultyAId,
+        batch: slotA.batch || origA.batch || 'General',
+        isExchanged: true,
+        exchangedWith: slotB.teacher,
+        status: 'occupied'
+      };
+
+      return updated;
+    });
+
+    // 2. Update facultyList
+    setFacultyList(prev => prev.map(f => {
+      let assigned = JSON.parse(JSON.stringify(f.assignedSlots || {}));
+
+      // If Faculty A
+      if (f.id === facultyAId || f.name === slotA.teacher) {
+        if (assigned[dayA]) {
+          assigned[dayA] = assigned[dayA].filter(s => !(s.roomId === roomA && s.time === timeA));
+        }
+        if (!assigned[dayB]) assigned[dayB] = [];
+        assigned[dayB].push({
+          roomId: roomB,
+          time: timeB,
+          course: slotA.course,
+          isExchanged: true,
+          exchangedWith: slotB.teacher
+        });
+        return { ...f, assignedSlots: assigned };
+      }
+
+      // If Faculty B
+      if (f.id === facultyBId || f.name === slotB.teacher) {
+        if (assigned[dayB]) {
+          assigned[dayB] = assigned[dayB].filter(s => !(s.roomId === roomB && s.time === timeB));
+        }
+        if (!assigned[dayA]) assigned[dayA] = [];
+        assigned[dayA].push({
+          roomId: roomA,
+          time: timeA,
+          course: slotB.course,
+          isExchanged: true,
+          exchangedWith: slotA.teacher
+        });
+        return { ...f, assignedSlots: assigned };
+      }
+
+      return f;
+    }));
+
+    // 3. Celebratory Toast
+    addToast(
+      '⇄ Class Exchange Successful!',
+      `Successfully exchanged classes between ${slotA.teacher} (${dayA} ${timeA}) and ${slotB.teacher} (${dayB} ${timeB}).`,
+      'success'
+    );
+
+    // 4. Trace Log
+    setTraces(prev => [
+      {
+        id: Date.now().toString(),
+        step: prev.length + 1,
+        tag: '[CLASS EXCHANGE]',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        message: `Faculty Swapped: ${slotA.teacher} taking ${roomB} at ${timeB} (${dayB}) ⇄ ${slotB.teacher} taking ${roomA} at ${timeA} (${dayA}). Both schedules updated.`
+      },
+      ...prev
+    ]);
   };
 
   // Calculate batch prior location to compute Zero Walking Delay for selectedDay
@@ -197,12 +540,29 @@ export function App() {
       );
 
       // Prior room for walking delay calculation
-      const fromRoom = batchPriorLocation ? {
-        id: batchPriorLocation.roomId,
-        name: batchPriorLocation.roomId,
-        building: batchPriorLocation.building,
-        floor: batchPriorLocation.floor
-      } : null;
+      // If batch had a class in the preceding hour, use that room;
+      // otherwise fallback to the section's allocated home room.
+      let fromRoom = null;
+      if (batchPriorLocation) {
+        fromRoom = {
+          id: batchPriorLocation.roomId,
+          name: batchPriorLocation.roomId,
+          building: batchPriorLocation.building,
+          floor: batchPriorLocation.floor
+        };
+      } else if (targetBatch && targetBatch !== 'General' && targetBatch !== 'None / General Workshop') {
+        const match = targetBatch.match(/Sec\s+[A-J]/i);
+        const cleanSec = match ? match[0] : targetBatch;
+        const homeVenue = VENUES.find(v => v.homeSection === cleanSec);
+        if (homeVenue) {
+          fromRoom = {
+            id: homeVenue.id,
+            name: homeVenue.name,
+            building: homeVenue.building,
+            floor: homeVenue.floor
+          };
+        }
+      }
 
       const walkingDelay = fromRoom ? calculateWalkingDelay(fromRoom, venue) : null;
 
@@ -419,7 +779,7 @@ export function App() {
     );
   };
 
-  // Approve Booking (Locks slots on the specific day's schedule)
+  // Approve Booking (Locks slots on the specific day's schedule or permanent master update)
   const handleApproveBooking = (bookingId) => {
     const targetBooking = bookings.find((b) => b.id === bookingId);
     if (!targetBooking) return;
@@ -427,30 +787,52 @@ export function App() {
     const bookingDay = targetBooking.day || selectedDay;
     const startIdx = TIME_SLOTS.findIndex(s => s.id === targetBooking.startTime);
     const duration = targetBooking.duration || 1;
+    const isPermanent = targetBooking.isPermanent || false;
 
     setWeeklyTimetableState((prev) => {
-      const dayTimetable = { ...(prev[bookingDay] || INITIAL_WEEKLY_TIMETABLES[bookingDay] || {}) };
-      const roomSchedule = { ...(dayTimetable[targetBooking.roomId] || {}) };
+      const updated = JSON.parse(JSON.stringify(prev));
+      const daysToUpdate = isPermanent ? DAYS_OF_WEEK : [bookingDay];
 
-      for (let i = 0; i < duration; i++) {
-        const slot = TIME_SLOTS[startIdx + i];
-        if (slot) {
-          roomSchedule[slot.id] = {
-            status: 'booked',
-            title: targetBooking.purpose,
-            batch: targetBooking.batch,
-            bookedBy: targetBooking.requestedBy
-          };
-        }
-      }
+      daysToUpdate.forEach(d => {
+        if (!updated[d]) updated[d] = {};
+        if (!updated[d][targetBooking.roomId]) updated[d][targetBooking.roomId] = {};
 
-      return {
-        ...prev,
-        [bookingDay]: {
-          ...dayTimetable,
-          [targetBooking.roomId]: roomSchedule
+        for (let i = 0; i < duration; i++) {
+          const slot = TIME_SLOTS[startIdx + i];
+          if (slot) {
+            updated[d][targetBooking.roomId][slot.id] = {
+              status: 'booked',
+              title: targetBooking.purpose,
+              batch: targetBooking.batch,
+              bookedBy: targetBooking.requestedBy,
+              isPermanentMasterChange: isPermanent
+            };
+          }
         }
-      };
+
+        // Feature 2: Dual-Schedule Sync & Room Release for Merged Sections
+        // If 2+ sections merged, release their original separate classrooms at that hour
+        if (targetBooking.isMergedSections && Array.isArray(targetBooking.mergedSections)) {
+          Object.keys(updated[d]).forEach(rId => {
+            if (rId !== targetBooking.roomId) {
+              for (let i = 0; i < duration; i++) {
+                const slot = TIME_SLOTS[startIdx + i];
+                if (slot) {
+                  const rSlot = updated[d][rId]?.[slot.id];
+                  if (rSlot && rSlot.status === 'occupied' && rSlot.batch) {
+                    const match = targetBooking.mergedSections.some(sec => rSlot.batch.includes(sec));
+                    if (match) {
+                      updated[d][rId][slot.id] = { status: 'free' };
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+      });
+
+      return updated;
     });
 
     setBookings((prev) =>
@@ -458,10 +840,41 @@ export function App() {
     );
 
     addToast(
-      'Booking Approved & Locked',
-      `Room ${targetBooking.roomName} successfully locked for ${bookingDay} (${targetBooking.timeSlot}) on master timetable.`,
+      isPermanent ? 'Permanent Master Timetable Overwritten' : 'Booking Approved & Locked',
+      `Room ${targetBooking.roomName} successfully locked for ${isPermanent ? 'recurring weekly timetable' : `${bookingDay} (${targetBooking.timeSlot})`} on master timetable.`,
       'success'
     );
+
+    setTraces(prev => [
+      {
+        id: Date.now().toString(),
+        step: prev.length + 1,
+        tag: isPermanent ? '[MASTER COMMIT]' : '[LOCK]',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        message: `${isPermanent ? 'Permanent Master Schedule Commit: ' : 'Single-day lock: '}Room ${targetBooking.roomName} booked for ${targetBooking.batch} (${targetBooking.purpose}) at ${targetBooking.timeSlot}.`
+      },
+      ...prev
+    ]);
+  };
+
+  const handleCommitGeneratedTimetable = (newTimetable, updatedFaculty) => {
+    if (newTimetable) setWeeklyTimetableState(newTimetable);
+    if (updatedFaculty) setFacultyList(updatedFaculty);
+    addToast(
+      '🎉 Master Timetable Deployed!',
+      'Zero-Walk Constraint solver schedule has been committed to the live campus master schedule.',
+      'success'
+    );
+    setTraces(prev => [
+      {
+        id: Date.now().toString(),
+        step: prev.length + 1,
+        tag: '[GENERATOR]',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        message: 'Zero-Walk Constraint Solver (Google OR-Tools CP-SAT) deployed new semester master timetable for Sections A–J.'
+      },
+      ...prev
+    ]);
   };
 
   // Reject Booking
@@ -589,26 +1002,29 @@ export function App() {
     }
   };
 
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-slate-950 font-sans">
+        <LoginPortal onLogin={handleLogin} />
+        <ToastContainer toasts={toasts} onDismiss={removeToast} />
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex flex-col bg-slate-50/50 font-sans text-zinc-900 overflow-hidden">
       {/* Top Header Bar */}
       <Header
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         activeRole={activeRole}
         setActiveRole={handleRoleChange}
         selectedTime={selectedTime}
         setSelectedTime={setSelectedTime}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
-        isDrawerOpen={isDrawerOpen}
-        setIsDrawerOpen={setIsDrawerOpen}
-        traceCount={traces.length}
-        unlockedCount={unlockedSlotsCount}
-        pendingCount={pendingBookingsCount}
-        onExportBackup={handleExportBackup}
-        onImportBackup={handleImportBackup}
-        onResetTimetable={handleResetTimetable}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       {/* Workspace Body */}
@@ -616,13 +1032,14 @@ export function App() {
         {/* Left Navigation Sidebar */}
         <Sidebar
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabChange}
           onApplyPreset={handleApplyPreset}
           facultyOnLeaveCount={facultyOnLeaveCount}
           pendingBookingsCount={pendingBookingsCount}
           freeVenuesCount={freeVenuesCount}
           totalVenuesCount={VENUES.length}
           unlockedSlotsCount={unlockedSlotsCount}
+          onOpenTimetable={handleOpenTimetable}
         />
 
         {/* Center Main Workspace */}
@@ -663,6 +1080,9 @@ export function App() {
               onResetAllLeave={handleResetAllLeave}
               unlockedRoomsList={unlockedRoomsList}
               selectedDay={selectedDay}
+              onOpenTimetable={handleOpenTimetable}
+              onRescheduleSlot={handleRescheduleSlot}
+              onOpenExchangeModal={handleOpenExchangeModal}
             />
           )}
 
@@ -675,19 +1095,25 @@ export function App() {
               freeVenuesCount={freeVenuesCount}
               unlockedSlotsCount={unlockedSlotsCount}
               pendingCount={pendingBookingsCount}
+              venues={VENUES}
+              facultyList={facultyList}
+              onCommitGeneratedTimetable={handleCommitGeneratedTimetable}
+            />
+          )}
+
+          {activeTab === 'timetable' && (
+            <TimetableView
+              facultyList={facultyList}
+              weeklyTimetableState={weeklyTimetableState}
+              selectedFacultyId={timetableInitialFacultyId}
+              selectedBatch={timetableInitialBatch}
+              onRescheduleSlot={handleRescheduleSlot}
+              onOpenExchangeModal={handleOpenExchangeModal}
+              onExchangeClasses={handleExchangeClasses}
+              onResetSchedule={handleResetSchedule}
             />
           )}
         </main>
-
-        {/* Column 3: Collapsible Right AI Agent Reasoning & Chat Drawer */}
-        <AiDrawer
-          isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
-          traces={traces}
-          onClearTraces={() => setTraces([])}
-          onAskAgent={(query) => handleNaturalLanguageSearch(query)}
-          isProcessing={isProcessing}
-        />
       </div>
 
       {/* Booking Modal with Complete Occupied Slot Prevention */}
@@ -700,6 +1126,25 @@ export function App() {
         onSubmitBooking={handleSubmitBooking}
         roomSchedule={currentDayTimetable[selectedBookingVenue?.id] || {}}
         facultyList={facultyList}
+        selectedDay={selectedDay}
+        weeklyTimetableState={weeklyTimetableState}
+        allVenues={VENUES}
+        onSwitchVenue={(venueId) => {
+          const v = VENUES.find(item => item.id === venueId);
+          if (v) setSelectedBookingVenue(v);
+        }}
+      />
+
+      {/* Teacher Class Exchange & Reschedule Modal */}
+      <ClassExchangeModal
+        isOpen={isExchangeModalOpen}
+        onClose={() => setIsExchangeModalOpen(false)}
+        initialSlot={exchangeModalInitialSlot}
+        facultyList={facultyList}
+        weeklyTimetableState={weeklyTimetableState}
+        venues={VENUES}
+        onConfirmExchange={handleExchangeClasses}
+        onConfirmReschedule={handleRescheduleSlot}
       />
 
       {/* Popover Toast Container */}

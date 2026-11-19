@@ -17,6 +17,9 @@ export function VenueCard({
   const isZeroDelay = walkingDelay?.isZeroDelay;
   const isOccupiedAtSelected = continuousFree?.isOccupiedAtSelected;
 
+  const exchangedSlots = Object.entries(schedule || {}).filter(([_, s]) => s && s.isExchanged);
+  const rescheduledSlots = Object.entries(schedule || {}).filter(([_, s]) => s && s.isRescheduled);
+
   const handleSlotClick = (slotId, slotInfo) => {
     // If user clicks any slot on the timeline bar, open booking modal for that slot
     onBookVenue(venue, slotId);
@@ -90,9 +93,21 @@ export function VenueCard({
 
         {/* Dynamic Context Badges */}
         <div className="space-y-1.5 mb-3 font-sans">
-          {isZeroDelay && (
-            <div className="text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg flex items-center gap-2 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+          {walkingDelay && (
+            <div className={`text-[11px] font-medium px-2.5 py-1 rounded-lg flex items-center gap-2 border ${
+              walkingDelay.isZeroDelay
+                ? 'text-emerald-800 bg-emerald-50 border-emerald-200'
+                : walkingDelay.badgeType === 'floor-transit'
+                ? 'text-indigo-800 bg-indigo-50 border-indigo-200'
+                : 'text-zinc-700 bg-zinc-50 border-zinc-200'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                walkingDelay.isZeroDelay
+                  ? 'bg-emerald-600'
+                  : walkingDelay.badgeType === 'floor-transit'
+                  ? 'bg-indigo-600'
+                  : 'bg-zinc-400'
+              }`} />
               <span className="truncate">{walkingDelay.label}</span>
             </div>
           )}
@@ -102,6 +117,24 @@ export function VenueCard({
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
               <span className="truncate">
                 Faculty on Leave: {unlockedStatus.unlockedSlots.map(s => `${s.teacher} (${s.timeSlot})`).join(', ')}
+              </span>
+            </div>
+          )}
+
+          {exchangedSlots.length > 0 && (
+            <div className="text-[11px] font-medium text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg flex items-center gap-2 border border-blue-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+              <span className="truncate">
+                Class Exchange: {exchangedSlots.map(([time, s]) => `${time} (${s.title || 'Swapped'})`).join(', ')}
+              </span>
+            </div>
+          )}
+
+          {rescheduledSlots.length > 0 && (
+            <div className="text-[11px] font-medium text-purple-900 bg-purple-50 px-2.5 py-1 rounded-lg flex items-center gap-2 border border-purple-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0" />
+              <span className="truncate">
+                Rescheduled: {rescheduledSlots.map(([time, s]) => `${time} (${s.title || 'Shifted'})`).join(', ')}
               </span>
             </div>
           )}
