@@ -265,9 +265,6 @@ export function AdminGateView({
               Governance & Solvers
             </span>
           </div>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            Manage reservation requests, customize curriculum intake across Sections A–J, and generate balanced semester master schedules.
-          </p>
         </div>
 
         {/* Sub-Tab Navigation */}
@@ -493,9 +490,6 @@ export function AdminGateView({
                     Interactive Curriculum & Faculty Intake (Sections A–J)
                   </h3>
                 </div>
-                <p className="text-xs text-zinc-500 mt-0.5">
-                  Customize course hours, assign professors, and toggle sections. Balanced solver spreads classes across all 5 days with natural breaks.
-                </p>
               </div>
 
               {/* Action Buttons */}
